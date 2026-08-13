@@ -27,7 +27,7 @@ function setWords() {
         wordCard.className = 'word-card';
 
         var sayWordImg = document.createElement('img');
-        sayWordImg.src = '../img/say_word_icon.png';
+        sayWordImg.src = 'img/say_word_icon.png';
 
         sayWordImg.style.width = '9%';
         sayWordImg.style.height = '7%';
