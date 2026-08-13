@@ -1,0 +1,64 @@
+.input {
+    width: 30%;
+    height: 4%;
+    background: white;
+    font-size: 25px;
+}
+
+.label {
+    font-size: 40px;
+}
+
+.container {
+    color: red;
+    text-align: center;
+}
+
+#words-table {
+    width: 100%;
+    text-align: center;
+}
+
+.word-card {
+    width: 50%;
+    color: Orange;
+    background: PaleGreen;
+    font-family: 'Times New Roman', 'Verdana', sans-serif;
+    font-size: 40px;
+    margin-right: auto;
+    margin-left: auto;
+    border: 5px solid green;
+    border-radius: 20px;
+
+    @media (max-width:768px) {
+        width: 300px;
+    }
+}
+
+.date-to-add {
+    color: DarkRed;
+}
+
+.word {
+    cursor: pointer;
+}
+
+.transcription {
+    color: DarkRed;
+}
+
+#original-input-word {
+    width: 20%;
+    font-size: 25px;
+    vertical-align: middle;
+
+    @media (max-width:768px) {
+        width: 250px;
+    }
+}
+
+#search-img {
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+}

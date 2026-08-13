@@ -1,0 +1,59 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/dictionary.css">
+</head>
+<body>
+    <div class="header">
+        <input id="white" type="radio" value="white" name="theme" onclick="changeTheme('white');">
+        <label for="white">Светлая</label>
+        <input id="black" type="radio" value="black" name="theme" onclick="changeTheme('black');" checked>
+        <label for="black">Тёмная</label><br>
+        <a style="color: red;" href="index.html">В начало</a>
+    </div>
+
+    <br><br>
+
+    <div class="container" style="display: block;">
+        <h1></h1>
+        
+        <br><br>
+        <div>
+            <a href="my_dictionaries.html"><img src="../img/back_icon.png" title="Назад"></a>
+            <img src="img/delete_all_icon.png" title="Удалить всё">
+            <img src="img/download_icon.png" title="Скачать словарь">
+            <img src="img/upload_icon.png" title="Загрузить словарь">
+        </div>
+
+        <br><br>
+        <div>
+            <input class="input" placeholder="Введите слово...">
+            <img src="img/search_icon.png" style="width: 4%; height: 6%;" id="search-img">
+        </div>
+
+        <br><br>
+        <div>
+            <label class="label">Сортировать по</label>
+
+            <br><br>
+
+            <input type="radio" id="sort1" name="sort_type">
+            <label for="sort1">Алфавиту</label>
+
+            <input type="radio" id="sort2" name="sort_type">
+            <label for="sort2">Дате добавления</label>
+        </div>
+        <hr><br><br><br>
+
+    </div>
+
+    <script src="js/consts.js"></script>
+    <script src="js/dictionary.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

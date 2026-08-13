@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/add_change_word.css">
+</head>
+<body>
+    <div class="header">
+        <input id="white" type="radio" value="white" name="theme" onclick="changeTheme('white');">
+        <label for="white">Светлая</label>
+        <input id="black" type="radio" value="black" name="theme" onclick="changeTheme('black');" checked>
+        <label for="black">Тёмная</label><br>
+        <a style="color: red;" href="index.html">В начало</a>
+    </div>
+
+    <br><br>
+
+    <div class="container">
+        <h1></h1>
+
+        <hr><br><br><br>
+        
+        <img src="img/say_word_icon.png" title="Произнести слово" onclick="prepareToSayWord();">
+        <div id="symbols-div" style="visibility: hidden;">
+            <button onclick="addSpecialSymbolToInput('Ü');">Ü</button>
+            <button onclick="addSpecialSymbolToInput('ü');">ü</button>
+            <button onclick="addSpecialSymbolToInput('Ö');">Ö</button>
+            <button onclick="addSpecialSymbolToInput('ö');">ö</button>
+            <button onclick="addSpecialSymbolToInput('Ä');">Ä</button>
+            <button onclick="addSpecialSymbolToInput('ä');">ä</button>
+            <button onclick="addSpecialSymbolToInput('ẞ');">ẞ</button>
+        </div>
+
+        <br><br>
+
+        <label class="label" for="original-word-input">Слово на </label>
+        <select id="langs-selector" onchange="showHideSpecialSymbols(this.value);"></select>
+        <label class="label" for="original-word-input">*</label>
+
+        <br><br>
+
+        <input class="input" id="original-word-input" placeholder="Введите слово..."><label class="label" onclick="clearInputField('origin')">X</label>
+
+        <br><br><br>
+
+        <label class="label" for="translate-word-input">Перевод на русский*</label><br><br>
+        <input class="input" id="translate-word-input" type="text" placeholder="Введите слово..."><label class="label" onclick="clearInputField('translate')">X</label>
+        <br><br><br>
+        <label class="label" for="transcription-input">Транскрипция</label><br><br>
+        <input class="input" id="transcription-input" type="text" placeholder="Введите транскрипцию..."><label class="label" onclick="clearInputField('transcription')">X</label>
+        <br><br><br><br><br>
+        <button onclick="addWordToGIST();">Добавить слово</button>
+
+        <br>
+        <a href="index.html"><button>Назад</button></a>
+    </div>
+
+    <script src="js/consts.js"></script>
+    <script src="js/add_change_word.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>
