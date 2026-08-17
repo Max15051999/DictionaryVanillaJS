@@ -20,6 +20,7 @@ var DICT_LANG_KEY = 'dictLang';
 var setBigFirstLetter = (word) => word.split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
 
 var langCodeMap = {
-    'Английский' : 'en',
+    'Английский (GB)' : 'en-GB',
+    'Английский (US)' : 'en-US',
     'Немецкий' : 'de'
 }

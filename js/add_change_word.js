@@ -33,26 +33,33 @@ function setTitle() {
 }
 
 function setLangs() {
-    console.log(GISTWords)
 
-    var uniqueLangs = new Set();
-
-    for (var wordInfo of GISTWords) {
-        var lang = wordInfo['language'];
-
-        if (lang === undefined)
-            continue;
-
-        if (uniqueLangs.has(lang))
-            continue;
-
-        uniqueLangs.add(lang);
-
+    for (var lang in langCodeMap) {
         if (lang.endsWith('ий'))
             lang = lang.replace(/ий$/, 'ом');
 
         langsSelector.add(new Option(lang, lang));
     }
+//    console.log(GISTWords)
+//
+//    var uniqueLangs = new Set();
+//
+//    for (var wordInfo of GISTWords) {
+//        var lang = wordInfo['language'];
+//
+//        if (lang === undefined)
+//            continue;
+//
+//        if (uniqueLangs.has(lang))
+//            continue;
+//
+//        uniqueLangs.add(lang);
+//
+//        if (lang.endsWith('ий'))
+//            lang = lang.replace(/ий$/, 'ом');
+//
+//        langsSelector.add(new Option(lang, lang));
+//    }
 }
 
 function addWordToGIST() {
@@ -61,6 +68,9 @@ function addWordToGIST() {
     var transcription = transcriptionInput.value.trim();
 
     var lang = langsSelector.value;
+
+    if (lang.includes(' '))
+        lang = lang.split(' ')[0];
 
     if (lang.endsWith('ом'))
         lang = lang.replace(/ом$/, 'ий');

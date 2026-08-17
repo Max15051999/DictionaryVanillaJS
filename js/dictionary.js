@@ -26,17 +26,45 @@ function setWords() {
         var wordCard = document.createElement('div');
         wordCard.className = 'word-card';
 
+
         var sayWordImg = document.createElement('img');
         sayWordImg.src = 'img/say_word_icon.png';
 
         sayWordImg.style.width = '9%';
         sayWordImg.style.height = '7%';
         sayWordImg.style.marginTop = '5%';
-        sayWordImg.onclick = () => sayWord(dictWord['original'], langCodeMap[dictLang]);
+
+        var lang = dictWord['language'];
+
+        console.log(lang)
+
+        if (lang === 'Английский') {
+            let langAccentSelector = document.createElement('select');
+
+            langAccentSelector.appendChild(new Option('GB', 'en-GB'));
+            langAccentSelector.appendChild(new Option('US', 'en-US'));
+
+            wordCard.appendChild(langAccentSelector);
+            wordCard.appendChild(document.createElement('br'));
+
+            console.log(langAccentSelector)
+
+            sayWordImg.onclick = () => prepareSayWord(dictWord['original'], langAccentSelector);
+        } else {
+            sayWordImg.onclick = () => sayWord(dictWord['original'], langCodeMap[lang]);
+        }
 
         var originalWordTag = document.createElement('h1');
         originalWordTag.className = 'word';
         originalWordTag.innerText = setBigFirstLetter(dictWord['original']);
+
+        var transcriptionTag = document.createElement('h4');
+        transcriptionTag.style.color = 'brown';
+        transcriptionTag.innerText = dictWord['transcription'];
+
+        var dateTag = document.createElement('h4');
+        dateTag.style.color = 'brown';
+        dateTag.innerText = dictWord['dateToAdd'];
 
         originalWordTag.onclick = function() {
             if (this.innerText.toLowerCase() === dictWord['original'].toLowerCase())
@@ -47,9 +75,15 @@ function setWords() {
 
         wordCard.appendChild(sayWordImg);
         wordCard.appendChild(originalWordTag);
+        wordCard.appendChild(transcriptionTag);
+        wordCard.appendChild(dateTag);
 
         container.appendChild(wordCard);
     }
+}
+
+function prepareSayWord(word, selector) {
+    sayWord(word, selector.value);
 }
 
 function sayWord(word, lang, rate=1) {
