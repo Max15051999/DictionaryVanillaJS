@@ -15,6 +15,7 @@ body {
 
 .token-not-set-container {
     text-align: center;
+    color: red;
     display: none;
 }
 
