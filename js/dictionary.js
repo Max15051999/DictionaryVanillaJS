@@ -1,5 +1,6 @@
 'use strict'
 
+var searchInput = document.querySelector('#search-input');
 var container = document.querySelector('.container');
 
 var dictLang = sessionStorage.getItem(DICT_LANG_KEY);
@@ -22,9 +23,10 @@ function setTitle() {
 
 function setWords() {
 
-    for (let dictWord of dictWords) {
+    dictWords.forEach((dictWord, idx) => {
         var wordCard = document.createElement('div');
         wordCard.className = 'word-card';
+        wordCard.id = `word-${idx}`;
 
 
         var sayWordImg = document.createElement('img');
@@ -79,7 +81,7 @@ function setWords() {
         wordCard.appendChild(dateTag);
 
         container.appendChild(wordCard);
-    }
+    });
 }
 
 function prepareSayWord(word, selector) {
@@ -97,6 +99,57 @@ function sayWord(word, lang, rate=1) {
         alert(`Не удалось произнести слово.\n${e}`);
     }
     // speechSynthesis.cancel();
+}
+
+function searchWordByInput() {
+    var inputWord = searchInput.value.toLowerCase().trim();
+
+    if (inputWord === '') {
+            dictWords.forEach((_, idx) => {
+                var wordCard = document.querySelector(`#word-${idx}`);
+                wordCard.style.display = 'block';
+            });
+            document.querySelector('h1').innerText = document.querySelector('h1').innerText.replace(/\d+/g, dictWords.length);
+    }
+
+    var findWordIndexes = new Set();
+    dictWords.forEach((word, idx) => {
+        if (word['original'].toLowerCase().includes(inputWord)) {
+            findWordIndexes.add(idx);
+        } else if (word['translate'].toLowerCase().includes(inputWord)) {
+            findWordIndexes.add(idx);
+        }
+    });
+
+    var totalMatches = findWordIndexes.size;
+    if (totalMatches > 0) {
+        if (totalMatches === 1) {
+            var wordCard = document.querySelector(`#word-${findWordIndexes.values().next().value}`);
+            wordCard.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+              inline: 'nearest'
+            });
+        } else {
+            dictWords.forEach((_, idx) => {
+                var display = '';
+
+                if (findWordIndexes.has(idx))
+                    display = 'block';
+                else
+                    display = 'none';
+
+                var wordCard = document.querySelector(`#word-${idx}`);
+                wordCard.style.display = display;
+            });
+
+            document.querySelector('h1').innerText = document.querySelector('h1').innerText.replace(/\d+/g, totalMatches);
+        }
+    } else {
+        alert('Совпадений не найдено');
+    }
+
+    searchInput.value = '';
 }
 
 setTitle();
