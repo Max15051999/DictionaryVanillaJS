@@ -97,7 +97,7 @@ function addWordToGIST() {
         translate: setBigFirstLetter(translateWord),
         transcription: transcription,
         language: lang,
-        dateToAdd: new Date()
+        dateToAdd: new Date().toISOString().replace('T', ' ').slice(0, 16)
     }
 
     GISTWords.push(word);
