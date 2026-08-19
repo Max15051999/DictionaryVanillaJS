@@ -1,0 +1,14 @@
+#up-down-scroll {
+    margin-right: 80%;
+    position: fixed;
+}
+
+.up-down-btn {
+    width: 30%;
+    height: 30%;
+
+    @media (max-width:768px) {
+        width: 30px;
+        height: 30px;
+    }
+}
