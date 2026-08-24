@@ -38,7 +38,7 @@ function setWords() {
 
         var lang = dictWord['language'];
 
-        console.log(lang)
+        var sayWordImgFunc;
 
         if (lang === 'Английский') {
             let langAccentSelector = document.createElement('select');
@@ -49,31 +49,21 @@ function setWords() {
             wordCard.appendChild(langAccentSelector);
             wordCard.appendChild(document.createElement('br'));
 
-            console.log(langAccentSelector)
-
-            sayWordImg.onclick = () => prepareSayWord(dictWord['original'], langAccentSelector);
+            sayWordImgFunc = () => prepareSayWord(dictWord['original'], langAccentSelector);
         } else {
-            sayWordImg.onclick = () => sayWord(dictWord['original'], langCodeMap[lang]);
+            sayWordImgFunc = () => sayWord(dictWord['original'], langCodeMap[lang]);
         }
 
         var originalWordTag = document.createElement('h1');
         originalWordTag.className = 'word';
-        originalWordTag.innerText = setBigFirstLetter(dictWord['original']);
 
         var transcriptionTag = document.createElement('h4');
         transcriptionTag.style.color = 'brown';
-        transcriptionTag.innerText = dictWord['transcription'];
 
         var dateTag = document.createElement('h4');
         dateTag.style.color = 'brown';
-        dateTag.innerText = dictWord['dateToAdd'];
 
-        originalWordTag.onclick = function() {
-            if (this.innerText.toLowerCase() === dictWord['original'].toLowerCase())
-                this.innerText = setBigFirstLetter(dictWord['translate']);
-            else
-                this.innerText = setBigFirstLetter(dictWord['original']);
-        }
+        setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag, sayWordImgFunc, dictWord);
 
         wordCard.appendChild(sayWordImg);
         wordCard.appendChild(originalWordTag);
@@ -98,7 +88,6 @@ function sayWord(word, lang, rate=1) {
     } catch (e) {
         alert(`Не удалось произнести слово.\n${e}`);
     }
-    // speechSynthesis.cancel();
 }
 
 function searchWordByInput() {
@@ -150,6 +139,47 @@ function searchWordByInput() {
     }
 
     searchInput.value = '';
+}
+
+function sortWords(sortType) {
+    if (dictWords.length === 1)
+        return;
+
+    if (sortType == 'alphabet')
+        dictWords = dictWords.sort((wordInfo, wordInfo2) => wordInfo['original'].localeCompare(wordInfo2['original']));
+    else
+        dictWords = dictWords.sort((wordInfo, wordInfo2) => new Date(wordInfo2['dateToAdd']) - new Date(wordInfo['dateToAdd']));
+
+    var wordCards = document.querySelectorAll('.word-card');
+
+    dictWords.forEach((dictWord, idx) => {
+        var wordCard = wordCards[idx];
+
+        var transcriptionDateTags = wordCard.querySelectorAll('h4');
+
+        var langAccentSelector = wordCard.querySelector('select');
+        var sayWordImg = wordCard.querySelector('img');
+        var originalWordTag = wordCard.querySelector('h1');
+        var transcriptionTag = transcriptionDateTags[0];
+        var dateTag = transcriptionDateTags[1];
+
+        setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag,
+            () => prepareSayWord(dictWord['original'], langAccentSelector), dictWord);
+    });
+}
+
+function setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag, sayWordImgFunc, dictWord) {
+    sayWordImg.onclick = sayWordImgFunc;
+    originalWordTag.innerText = setBigFirstLetter(dictWord['original']);
+    transcriptionTag.innerText = dictWord['transcription'];
+    dateTag.innerText = dictWord['dateToAdd'];
+
+    originalWordTag.onclick = function() {
+        if (this.innerText.toLowerCase() === dictWord['original'].toLowerCase())
+            this.innerText = setBigFirstLetter(dictWord['translate']);
+        else
+            this.innerText = setBigFirstLetter(dictWord['original']);
+    }
 }
 
 setTitle();
