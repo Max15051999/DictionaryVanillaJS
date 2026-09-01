@@ -124,23 +124,24 @@ function addWordToGIST() {
                 body: JSON.stringify(updateData)
             });
 
-            if (!updateResponse.ok) {
-                throw new Error(`Failed to update Gist: ${updateResponse.status}`);
-            }
+//            if (!updateResponse.ok)
+//                throw new Error(`Failed to update Gist: ${updateResponse.status}`);
+//
+//            HEADERS['Authorization'] = token;
+//
+//            var response = await fetch(URL, {headers: HEADERS});
+//            var data = await response.json();
+//            var wordsFile = data['files'][WORDS_FILE_NAME];
+//
+//            if (wordsFile !== null) {
+//                    try {
+//                        localStorage.setItem(LOCAL_STORAGE_GIST_KEY, wordsFile['content']);
+//                    } catch (error) {
+//
+//                    }
+//            }
 
-            HEADERS['Authorization'] = token;
-
-            var response = await fetch(URL, {headers: HEADERS});
-            var data = await response.json();
-            var wordsFile = data['files'][WORDS_FILE_NAME];
-
-            if (wordsFile !== null) {
-                    try {
-                        localStorage.setItem(LOCAL_STORAGE_GIST_KEY, wordsFile['content']);
-                    } catch (error) {
-
-                    }
-            }
+            localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
 
             alert('✅ Слово успешно добавлено в GIST');
 

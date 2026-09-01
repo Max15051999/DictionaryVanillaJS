@@ -24,7 +24,7 @@ function setTitle() {
 function setWords() {
 
     dictWords.forEach((dictWord, idx) => {
-        var wordCard = document.createElement('div');
+        let wordCard = document.createElement('div');
         wordCard.className = 'word-card';
         wordCard.id = `word-${idx}`;
 
@@ -63,12 +63,83 @@ function setWords() {
         var dateTag = document.createElement('h4');
         dateTag.style.color = 'brown';
 
+        var deleteWordImg = document.createElement('img');
+        var editWordImg = document.createElement('img');
+
+        deleteWordImg.src = 'img/delete_word_icon.png';
+
+        deleteWordImg.style.width = '5%';
+        deleteWordImg.style.height = '4%';
+
+        deleteWordImg.title = 'Удалить слово';
+
+        editWordImg.src = 'img/edit_icon.png';
+
+        editWordImg.style.width = '5%';
+        editWordImg.style.height = '4%';
+
+        editWordImg.title = 'Редактировать слово';
+
+        deleteWordImg.onclick = function() {
+            if (confirm(`Вы действительно хотите удалить слово ${setBigFirstLetter(dictWord['original'])} ?`)) {
+                // delete dictWord[dictWord['original']];
+                //console.log(dictWords[idx])
+                var GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY)).filter((w) => w['original'].toLowerCase() !== dictWord['original'].toLowerCase());
+
+                var updateData = {
+                    files: {
+                        [WORDS_FILE_NAME]: {
+                            content: JSON.stringify(GISTWords)
+                        }
+                    }
+                };
+
+                var token = localStorage.getItem(GIST_TOKEN_NAME);
+
+                (async () => {
+                    try {
+                        var updateResponse = await fetch(URL, {
+                            method: 'PATCH',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/vnd.github.v3+json'
+                            },
+                            body: JSON.stringify(updateData)
+                        });
+
+                        if (!updateResponse.ok)
+                            throw new Error(`Failed to update Gist: ${updateResponse.status}`);
+
+                        localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+
+                        alert(`Слово ${setBigFirstLetter(dictWord['original'])} успешно удалено`)
+
+                        wordCard.style.display = 'none';
+
+                        dictWords.splice(idx, 1);
+
+                        setTitle();
+
+                    } catch(error) {
+                        alert('❌ Error updating GIST:', error.message);
+                    }
+                })();
+            }
+        }
+
+        editWordImg.onclick = function() {
+
+        };
+
         setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag, sayWordImgFunc, dictWord);
 
         wordCard.appendChild(sayWordImg);
         wordCard.appendChild(originalWordTag);
         wordCard.appendChild(transcriptionTag);
         wordCard.appendChild(dateTag);
+        wordCard.appendChild(deleteWordImg);
+        wordCard.appendChild(editWordImg);
 
         container.appendChild(wordCard);
     });
