@@ -2,15 +2,33 @@
 
 var container = document.querySelector('.container');
 
-var GISTWords = [];
+var GISTWords = []
+var uniqueLangs = new Set();
 
-try {
+if (sessionStorage.getItem('dictPage') === 'home') {
+    try {
+        getUpdatedWordsList().then(result => {
+            GISTWords = result;
+
+            prepareEnviroment();
+        });
+    } catch (error) {
+
+    }
+} else {
     GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY));
-} catch {
-    GISTWords = [];
+    prepareEnviroment();
 }
 
-var uniqueLangs = getUniqueLangs();
+function prepareEnviroment() {
+    uniqueLangs = getUniqueLangs();
+
+    document.querySelector('h1').innerText = `Мои словари (${uniqueLangs.size})`;
+
+    setDictionaries();
+
+    localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+}
 
 function getUniqueLangs() {
     var uniqueLangs = new Set();
@@ -55,7 +73,3 @@ function setDictionaries() {
         container.appendChild(br);
     }
 }
-
-document.querySelector('h1').innerText = `Мои словари (${uniqueLangs.size})`;
-
-setDictionaries();

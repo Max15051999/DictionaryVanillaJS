@@ -11,12 +11,6 @@ var symbolsDiv = document.querySelector('#symbols-div');
 
 var GISTWords = [];
 
-try {
-    GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY));
-} catch {
-    GISTWords = [];
-}
-
 function setTitle() {
     var previousUrl = sessionStorage.getItem('prevPage');
     var title = '';
@@ -40,26 +34,6 @@ function setLangs() {
 
         langsSelector.add(new Option(lang, lang));
     }
-//    console.log(GISTWords)
-//
-//    var uniqueLangs = new Set();
-//
-//    for (var wordInfo of GISTWords) {
-//        var lang = wordInfo['language'];
-//
-//        if (lang === undefined)
-//            continue;
-//
-//        if (uniqueLangs.has(lang))
-//            continue;
-//
-//        uniqueLangs.add(lang);
-//
-//        if (lang.endsWith('ий'))
-//            lang = lang.replace(/ий$/, 'ом');
-//
-//        langsSelector.add(new Option(lang, lang));
-//    }
 }
 
 function addWordToGIST() {
@@ -85,74 +59,65 @@ function addWordToGIST() {
         return;
     }
 
-    for (var GISTWord of GISTWords) {
-        if (GISTWord['original'].toLowerCase() === originalWord.toLowerCase()) {
-            alert('Данное слово уже содержится в словаре');
-            return;
-        }
-    }
+    try {
+        getUpdatedWordsList().then(result => {
+            GISTWords = result;
 
-    var word = {
-        original: setBigFirstLetter(originalWord),
-        translate: setBigFirstLetter(translateWord),
-        transcription: transcription,
-        language: lang,
-        dateToAdd: new Date().toISOString().replace('T', ' ').slice(0, 16)
-    }
-
-    GISTWords.push(word);
-
-    var updateData = {
-        files: {
-            [WORDS_FILE_NAME]: {
-                content: JSON.stringify(GISTWords)
+            for (var GISTWord of GISTWords) {
+                if (GISTWord['original'].toLowerCase() === originalWord.toLowerCase()) {
+                    alert('Данное слово уже содержится в словаре');
+                    return;
+                }
             }
-        }
-    };
 
-    var token = localStorage.getItem(GIST_TOKEN_NAME);
+            var word = {
+                original: setBigFirstLetter(originalWord),
+                translate: setBigFirstLetter(translateWord),
+                transcription: transcription,
+                language: lang,
+                dateToAdd: new Date().toISOString().replace('T', ' ').slice(0, 16)
+            }
 
-    (async () => {
-        try {
-            var updateResponse = await fetch(URL, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `token ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.github.v3+json'
-                },
-                body: JSON.stringify(updateData)
-            });
+            GISTWords.push(word);
 
-//            if (!updateResponse.ok)
-//                throw new Error(`Failed to update Gist: ${updateResponse.status}`);
-//
-//            HEADERS['Authorization'] = token;
-//
-//            var response = await fetch(URL, {headers: HEADERS});
-//            var data = await response.json();
-//            var wordsFile = data['files'][WORDS_FILE_NAME];
-//
-//            if (wordsFile !== null) {
-//                    try {
-//                        localStorage.setItem(LOCAL_STORAGE_GIST_KEY, wordsFile['content']);
-//                    } catch (error) {
-//
-//                    }
-//            }
+            var updateData = {
+                files: {
+                    [WORDS_FILE_NAME]: {
+                        content: JSON.stringify(GISTWords)
+                    }
+                }
+            };
 
-            localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+            var token = localStorage.getItem(GIST_TOKEN_NAME);
 
-            alert('✅ Слово успешно добавлено в GIST');
+            (async () => {
+                try {
+                    var updateResponse = await fetch(URL, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `token ${token}`,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/vnd.github.v3+json'
+                        },
+                        body: JSON.stringify(updateData)
+                    });
 
-            originalWordInput.value = '';
-            translateWordInput.value = '';
-            transcriptionInput.value = '';
+                    localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
 
-        } catch(error) {
-            alert('❌ Error updating GIST:', error.message);
-        }
-    })();
+                    alert('✅ Слово успешно добавлено в GIST');
+
+                    originalWordInput.value = '';
+                    translateWordInput.value = '';
+                    transcriptionInput.value = '';
+
+                } catch(error) {
+                    alert('❌ Error updating GIST:', error.message);
+                }
+            })();
+        });
+    } catch (error) {
+        alert('❌ Error updating GIST:', error.message);
+    }
 }
 
 function showHideSpecialSymbols(lang) {
