@@ -129,7 +129,9 @@ function setWords() {
         }
 
         editWordImg.onclick = function() {
-
+            sessionStorage.setItem('prevPage', 'dict');
+            sessionStorage.setItem('editWord', JSON.stringify(dictWord));
+            window.location.href = 'add_change_word.html';
         };
 
         setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag, sayWordImgFunc, dictWord);

@@ -54,10 +54,10 @@
         <label class="label" for="transcription-input">Транскрипция</label><br><br>
         <input class="input" id="transcription-input" type="text" placeholder="Введите транскрипцию..."><label class="label" onclick="clearInputField('transcription')">X</label>
         <br><br><br><br><br>
-        <button onclick="addWordToGIST();">Добавить слово</button>
+        <button id="add-change-word-btn" onclick="addChangeWordToGIST(null);"></button>
 
         <br>
-        <a href="index.html"><button>Назад</button></a>
+        <a id="back-btn"><button>Назад</button></a>
     </div>
 
     <script src="js/consts.js"></script>
