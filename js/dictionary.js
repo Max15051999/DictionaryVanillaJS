@@ -255,5 +255,47 @@ function setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag,
     }
 }
 
+function deleteAllWords() {
+    if (confirm('Вы действительно хотите удалить все слова из этого словаря?')) {
+        var GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY));
+
+        var uniqueOriginals = new Set(dictWords.map(dictWord => dictWord['original']));
+
+        GISTWords = GISTWords.filter(GISTWord => GISTWord['language'] !== dictLang && !uniqueOriginals.has(GISTWord['original']));
+
+        var updateData = {
+            files: {
+                [WORDS_FILE_NAME]: {
+                    content: JSON.stringify(GISTWords)
+                }
+            }
+        };
+
+        var token = localStorage.getItem(GIST_TOKEN_NAME);
+
+        (async () => {
+            try {
+                var updateResponse = await fetch(URL, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+
+                alert('Все слова из данного словаря успешно удалены');
+
+                window.location.href = 'my_dictionaries.html';
+            } catch(error) {
+                alert('❌ Error updating GIST:', error.message);
+            }
+        })();
+    }
+}
+
 setTitle();
 setWords();
