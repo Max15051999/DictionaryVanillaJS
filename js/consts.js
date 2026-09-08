@@ -4,7 +4,7 @@ var GIST_ID = 'c381ba451d14c051e0307cea0bb76a92';
 
 var WORDS_FILE_NAME = 'words.json';
 
-var URL = 'https://api.github.com/gists/' + GIST_ID;
+var API = 'https://api.github.com/gists/' + GIST_ID;
 
 var HEADERS = {
                 'Accept': 'application/vnd.github+json',

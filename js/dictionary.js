@@ -98,7 +98,7 @@ function setWords() {
 
                 (async () => {
                     try {
-                        var updateResponse = await fetch(URL, {
+                        var updateResponse = await fetch(API, {
                             method: 'PATCH',
                             headers: {
                                 'Authorization': `token ${token}`,
@@ -275,7 +275,7 @@ function deleteAllWords() {
 
         (async () => {
             try {
-                var updateResponse = await fetch(URL, {
+                var updateResponse = await fetch(API, {
                     method: 'PATCH',
                     headers: {
                         'Authorization': `token ${token}`,
@@ -295,6 +295,41 @@ function deleteAllWords() {
             }
         })();
     }
+}
+
+function downloadDict() {
+
+    var data = [];
+    var columns = [];
+
+    for (var key in dictWords[0])
+        columns.push(key);
+
+    data.push(columns);
+
+    dictWords.forEach(dictWord => {
+        var row = [];
+        columns.forEach(column => row.push(dictWord[column]));
+        data.push(row);
+    });
+
+    var csvContent = '';
+
+    data.forEach(row => {
+      csvContent += row.join(';') + '\n';
+    });
+
+    var blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `words_${dictLang}.csv`;
+
+    document.body.appendChild(link);
+    link.click();
+
+    // Не забудьте отозвать URL из памяти
+    setTimeout(() => URL.revokeObjectURL(link.href), 100);
 }
 
 setTitle();

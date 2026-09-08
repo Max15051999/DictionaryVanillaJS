@@ -198,7 +198,7 @@ function addChangeWordToGIST(changedWord) {
 
             (async () => {
                 try {
-                    var updateResponse = await fetch(URL, {
+                    var updateResponse = await fetch(API, {
                         method: 'PATCH',
                         headers: {
                             'Authorization': `token ${token}`,
