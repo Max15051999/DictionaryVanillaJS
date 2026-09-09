@@ -44,7 +44,6 @@ function setTitle() {
 
 function setLangs() {
 
-    var currentLangIdx = 0;
     var currentLang = sessionStorage.getItem(DICT_LANG_KEY);
 
     for (var lang in langCodeMap) {
@@ -78,7 +77,6 @@ function setLangs() {
     if (currentLang === 'Английском')
         currentLang += ' (GB)';
 
-    console.log(currentLang)
     langsSelector.value = currentLang;
 
     showHideSpecialSymbols(currentLang);
@@ -95,7 +93,6 @@ function enabledDisabledBtn(currentWord) {
 }
 
 function setWord(word) {
-    console.log(word)
 
     originalWordInput.value = word['original'];
     translateWordInput.value = word['translate'];
@@ -268,11 +265,21 @@ function prepareToSayWord() {
         return;
 
     var lang = langsSelector.value;
+    var code = '';
 
-    if (lang.endsWith('ом'))
-        lang = lang.replace(/ом$/, 'ий');
+    if (lang.includes(' ')) {
+        var parts = lang.split(' ');
+        lang = parts[0];
+        code = parts[1];
+   }
 
-    sayWord(word, langCodeMap[lang]);
+   if (lang.endsWith('ом'))
+       lang = lang.replace(/ом$/, 'ий');
+
+   if (lang === 'Английский')
+       lang += ' ' + code;
+
+   sayWord(word, langCodeMap[lang]);
 }
 
 function sayWord(word, lang, rate=1) {

@@ -1,5 +1,6 @@
 'use strict'
 
+var fileInput = document.querySelector('#file-input');
 var searchInput = document.querySelector('#search-input');
 var container = document.querySelector('.container');
 
@@ -82,8 +83,6 @@ function setWords() {
 
         deleteWordImg.onclick = function() {
             if (confirm(`Вы действительно хотите удалить слово ${setBigFirstLetter(dictWord['original'])} ?`)) {
-                // delete dictWord[dictWord['original']];
-                //console.log(dictWords[idx])
                 var GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY)).filter((w) => w['original'].toLowerCase() !== dictWord['original'].toLowerCase());
 
                 var updateData = {
@@ -115,11 +114,14 @@ function setWords() {
 
                         alert(`Слово ${setBigFirstLetter(dictWord['original'])} успешно удалено`)
 
-                        wordCard.style.display = 'none';
-
                         dictWords.splice(idx, 1);
 
-                        setTitle();
+                        if (dictWords.length === 0) {
+                            window.location.href = 'my_dictionaries.html';
+                        } else {
+                            wordCard.style.display = 'none';
+                            setTitle();
+                        }
 
                     } catch(error) {
                         alert('❌ Error updating GIST:', error.message);
@@ -131,6 +133,8 @@ function setWords() {
         editWordImg.onclick = function() {
             sessionStorage.setItem('prevPage', 'dict');
             sessionStorage.setItem('editWord', JSON.stringify(dictWord));
+            sessionStorage.setItem(DICT_LANG_KEY, dictLang);
+
             window.location.href = 'add_change_word.html';
         };
 
@@ -330,6 +334,27 @@ function downloadDict() {
 
     // Не забудьте отозвать URL из памяти
     setTimeout(() => URL.revokeObjectURL(link.href), 100);
+}
+
+function uploadDict() {
+    var file = fileInput.files[0];
+
+    if (file) {
+        var reader = new FileReader();
+
+        reader.onload = function(event) {
+            var content = event.target.result;
+            console.log('File content:', content);
+        };
+
+        reader.onerror = function(error) {
+            console.error('Error reading file:', error);
+        };
+
+        reader.readAsText(file);
+    } else {
+        alert('Вы не загрузили файл со словами');
+    }
 }
 
 setTitle();
