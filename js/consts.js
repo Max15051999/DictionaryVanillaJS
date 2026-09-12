@@ -17,6 +17,10 @@ var LOCAL_STORAGE_GIST_KEY = 'gist_words';
 
 var DICT_LANG_KEY = 'dictLang';
 
+var CSV_FILE_DELIMITER = ';';
+
+var USING_COLUMNS_IN_CSV = new Set(['original', 'translate', 'transcription']);
+
 var setBigFirstLetter = (word) => word.split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
 
 var langCodeMap = {

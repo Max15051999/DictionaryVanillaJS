@@ -5,7 +5,9 @@ var container = document.querySelector('.container');
 var GISTWords = []
 var uniqueLangs = new Set();
 
-if (sessionStorage.getItem('dictPage') === 'home') {
+var dictPage = sessionStorage.getItem('dictPage');
+
+if (dictPage === 'home' || dictPage === 'guess') {
     try {
         getUpdatedWordsList().then(result => {
             GISTWords = result;
@@ -65,7 +67,7 @@ function setDictionaries() {
         button.textContent = btnText;
         button.onclick = () => sessionStorage.setItem(DICT_LANG_KEY, uniqueLang);
 
-        href.href = 'dictionary.html';
+        href.href = dictPage === 'guess' ? 'guess_words.html' : 'dictionary.html';
 
         href.appendChild(button);
 

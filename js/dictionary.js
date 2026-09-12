@@ -1,5 +1,6 @@
 'use strict'
 
+var uploadDictBtn = document.querySelector('#upload-dict-btn');
 var fileInput = document.querySelector('#file-input');
 var searchInput = document.querySelector('#search-input');
 var container = document.querySelector('.container');
@@ -22,12 +23,12 @@ function setTitle() {
     document.querySelector('h1').innerText = `${dictName} (${dictWords.length})`;
 }
 
-function setWords() {
+function setWords(words, startWordIndex) {
 
-    dictWords.forEach((dictWord, idx) => {
+    words.forEach(dictWord => {
         let wordCard = document.createElement('div');
         wordCard.className = 'word-card';
-        wordCard.id = `word-${idx}`;
+        wordCard.id = `word-${startWordIndex}`;
 
 
         var sayWordImg = document.createElement('img');
@@ -114,7 +115,7 @@ function setWords() {
 
                         alert(`Слово ${setBigFirstLetter(dictWord['original'])} успешно удалено`)
 
-                        dictWords.splice(idx, 1);
+                        dictWords.splice(startWordIndex, 1);
 
                         if (dictWords.length === 0) {
                             window.location.href = 'my_dictionaries.html';
@@ -148,6 +149,8 @@ function setWords() {
         wordCard.appendChild(editWordImg);
 
         container.appendChild(wordCard);
+
+        startWordIndex++;
     });
 }
 
@@ -304,10 +307,7 @@ function deleteAllWords() {
 function downloadDict() {
 
     var data = [];
-    var columns = [];
-
-    for (var key in dictWords[0])
-        columns.push(key);
+    var columns = Array.from(USING_COLUMNS_IN_CSV);
 
     data.push(columns);
 
@@ -320,7 +320,7 @@ function downloadDict() {
     var csvContent = '';
 
     data.forEach(row => {
-      csvContent += row.join(';') + '\n';
+      csvContent += row.join(CSV_FILE_DELIMITER) + '\n';
     });
 
     var blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
@@ -336,6 +336,13 @@ function downloadDict() {
     setTimeout(() => URL.revokeObjectURL(link.href), 100);
 }
 
+function enabledDisabledUploadDictBtn() {
+    if (fileInput.files[0])
+        uploadDictBtn.classList.remove('img-disabled');
+    else
+        uploadDictBtn.classList.add('img-disabled');
+}
+
 function uploadDict() {
     var file = fileInput.files[0];
 
@@ -344,11 +351,101 @@ function uploadDict() {
 
         reader.onload = function(event) {
             var content = event.target.result;
-            console.log('File content:', content);
+
+            try {
+                var lines = content.split('\n');
+
+                var columns = lines[0].split(CSV_FILE_DELIMITER);
+
+                for (var column of columns) {
+                    if (!USING_COLUMNS_IN_CSV.has(column)) {
+                        alert('Неверные названия столбцов в загруженном файле');
+                        return;
+                    }
+                }
+
+                var GISTWords = [];
+                getUpdatedWordsList().then(result => {
+                        GISTWords = result;
+
+                        localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+
+                        dictWords = GISTWords.filter(GISTWord => GISTWord['language'] === dictLang);
+
+                        var initLen = dictWords.length;
+
+                        lines = lines.splice(1);
+
+                        var uniqueOriginals = new Set(dictWords.map(dictWord => dictWord['original'].toLowerCase()));
+
+                        lines.forEach(line => {
+                            if (line !== '') {
+                                var parts = line.split(CSV_FILE_DELIMITER);
+
+                                if (columns.length !== parts.length)
+                                    return;
+
+                                if (uniqueOriginals.has(parts[0].toLowerCase()))
+                                    return;
+
+                                var newWord = {};
+
+                                columns.forEach((column, idx) => newWord[column] = parts[idx]);
+
+                                newWord['language'] = dictLang;
+                                newWord['dateToAdd'] = new Date().toISOString().replace('T', ' ').slice(0, 16);
+
+                                dictWords.push(newWord);
+                                GISTWords.push(newWord);
+                            }
+                        });
+
+                        var totalAddedWords = dictWords.length - initLen;
+
+                        if (totalAddedWords > 0) {
+                            var updateData = {
+                                files: {
+                                    [WORDS_FILE_NAME]: {
+                                        content: JSON.stringify(GISTWords)
+                                    }
+                                }
+                            };
+
+                            var token = localStorage.getItem(GIST_TOKEN_NAME);
+
+                            (async () => {
+                                try {
+                                    var updateResponse = await fetch(API, {
+                                        method: 'PATCH',
+                                        headers: {
+                                            'Authorization': `token ${token}`,
+                                            'Content-Type': 'application/json',
+                                            'Accept': 'application/vnd.github.v3+json'
+                                        },
+                                        body: JSON.stringify(updateData)
+                                    });
+
+                                    localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+                                } catch(error) {
+                                    alert('❌ Error updating GIST:', error.message);
+                                }
+                            })();
+
+                            setTitle();
+                            setWords(dictWords.splice(initLen), initLen);
+                        }
+
+                        alert(totalAddedWords > 0 ? `Добавлено слов: ${totalAddedWords}` : 'Ни одно слово не было добавлено.');
+                });
+            } catch (error) {
+                alert('Не удалось загрузить слова из файла');
+                console.log(error)
+            }
         };
 
         reader.onerror = function(error) {
             console.error('Error reading file:', error);
+            alert('Ошибка чтения файла');
         };
 
         reader.readAsText(file);
@@ -358,4 +455,4 @@ function uploadDict() {
 }
 
 setTitle();
-setWords();
+setWords(dictWords, 0);
