@@ -8,13 +8,10 @@ var withCards = localStorage.getItem(IS_GAME_WITH_CARDS) === '1';
 
 var totalWordsLabel = document.querySelector('#total-words-label');
 
-var wordCards = null;
+var wordCards = document.querySelectorAll('.word-card');
 
 var wordOriginalKey = localStorage.getItem(PRIMARY_GAME_LANG) === 'foreign' ? 'original' : 'translate';
 var wordTranslateKey = wordOriginalKey === 'original' ? 'translate' : 'original';
-
-if (withCards)
-    wordCards = document.querySelectorAll('.word-card');
 
 var questionStatusImg = document.querySelector('#question-status');
 var rightAnswerLabel = document.querySelector('#right-answer');
@@ -45,9 +42,9 @@ var rightAnswerCounter = 0;
 var wrongAnswerCounter = 0;
 var hasIncrementWrong = false;
 
-function setTitle() {
+function fillAccents() {
 
-    if (dictLang === 'Английский' && wordOriginalKey == 'original') {
+    if ((dictLang === 'Английский' || dictLang === 'Английском') && wordOriginalKey == 'original') {
         accentsSelector.style.visibility = 'visible';
 
         for (var lang in langCodeMap) {
@@ -57,6 +54,11 @@ function setTitle() {
             }
         }
     }
+}
+
+function setTitle() {
+
+    fillAccents();
 
     if (dictLang.endsWith('ий'))
        dictLang = dictLang.replace(/ий$/, 'ом');
@@ -128,7 +130,7 @@ function setWordInfo() {
     if (gameWordIndex < totalWords) {
         currentWord = gameWords[gameWordIndex];
         originalWordLabel.innerText = currentWord[wordOriginalKey];
-        transcriptionWordLabel.innerText = currentWord['transcription'];
+        transcriptionWordLabel.innerText = wordOriginalKey === 'original' ? currentWord['transcription'] : '';
 
         translateWordInput.focus();
 
@@ -141,24 +143,29 @@ function setWordInfo() {
             setCardsVariants();
 
     } else {
+        var title = `Игра в слова на ${dictLang} окончена`;
+
         var gameOverMsg = `
-                            Игра в слова окончена. Ваш результат:
-                            Всего вопросов: ${totalWords}
-                            Правильных ответов: ${rightAnswerCounter}
-                            Неправильных ответов: ${wrongAnswerCounter}
-                            Процент правильных ответов: ${((rightAnswerCounter * 100) / totalWords).toFixed(2)}%
-                            Начать заново?`;
+                    Игра в слова окончена. Ваш результат:
+                    Всего вопросов: ${totalWords}
+                    Правильных ответов: ${rightAnswerCounter}
+                    Неправильных ответов: ${wrongAnswerCounter}
+                    Процент правильных ответов: ${((rightAnswerCounter * 100) / totalWords).toFixed(2)}%
+                    Начать заново?`;
 
-        var isRestart = confirm(gameOverMsg);
-
-        if (isRestart) {
-            gameWordIndex = 0;
-            rightAnswerCounter = 0;
-            wrongAnswerCounter = 0;
-            setWordInfo();
-        } else {
-            window.location.href = 'guess_words.html';
-        }
+        showCustomAlert(title, gameOverMsg);
+//
+//        var isRestart = confirm(gameOverMsg);
+//
+//        if (isRestart) {
+//            gameWordIndex = 0;
+//            rightAnswerCounter = 0;
+//            wrongAnswerCounter = 0;
+//            setWordInfo();
+//
+//        } else {
+//            window.location.href = 'guess_words.html';
+//        }
     }
 }
 

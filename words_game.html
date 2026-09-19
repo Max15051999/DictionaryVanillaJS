@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/words_game.css">
+    <link rel="stylesheet" href="css/custom_alert.css">
     <title></title>
 </head>
 <body>
@@ -74,9 +75,40 @@
         <button onclick="if (confirm('Вы действительно хотите выйти?')) window.location.href = 'guess_words.html'">Назад</button>
     </div>
 
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-title" id="modalTitle">Игра окончена</div>
+            <div class="modal-content" id="modalContent">
+                <p id="game-over-msg"></p>
+
+                <div class="settings">
+                    <input class="rbtn" type="radio" id="foreign-rus" name="primary-lang">
+                    <label id="foreign-rus-label" for="foreign-rus"></label>
+                    <input class="rbtn" type="radio" id="rus-foreign" name="primary-lang">
+                    <label id="rus-foreign-label" for="rus-foreign"></label>
+                </div>
+
+                <br><br><br>
+
+                <div class="settings">
+                    <input class="rbtn" type="radio" id="word-cards" name="choose-type">
+                    <label for="word-cards">Карточки</label>
+                    <input class="rbtn" type="radio" id="word-text" name="choose-type">
+                    <label for="word-text">Текст</label>
+                </div>
+
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal();">Cancel</button>
+                <button class="btn-primary" onclick="confirmModal();">OK</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/consts.js"></script>
     <script src="js/token.js"></script>
     <script src="js/words_game.js"></script>
     <script src="js/theme.js"></script>
+    <script src="js/custom_alert.js"></script>
 </body>
 </html>
