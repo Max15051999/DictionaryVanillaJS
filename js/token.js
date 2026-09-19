@@ -17,7 +17,7 @@ async function saveFileContent(content) {
         localStorage.setItem(LOCAL_STORAGE_GIST_KEY, content);
         alert('Данные с GIST успешно обновлены');
         // console.log(localStorage.getItem(LOCAL_STORAGE_GIST_KEY));
-    } catch (error) {
+    } catch(error) {
         alert(`Ошибка обновления данных: ${error}`);
     }
 }
@@ -31,7 +31,7 @@ async function getFileFromGIST(token) {
         var data = await response.json();
         var wordsFile = data['files'][WORDS_FILE_NAME];
         return wordsFile;
-    } catch (error) {
+    } catch(error) {
         return null;
     }
 }

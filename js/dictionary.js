@@ -12,7 +12,7 @@ var dictWords = [];
 try {
     var dictWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY))
             .filter(GISTWord => GISTWord['language'] === dictLang);
-} catch (error) {
+} catch(error) {
     dictWords = [];
 }
 
@@ -426,18 +426,18 @@ function uploadDict() {
                                     });
 
                                     localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+
+                                    setTitle();
+                                    setWords(dictWords.splice(initLen), initLen);
                                 } catch(error) {
                                     alert('❌ Error updating GIST:', error.message);
                                 }
                             })();
-
-                            setTitle();
-                            setWords(dictWords.splice(initLen), initLen);
                         }
 
                         alert(totalAddedWords > 0 ? `Добавлено слов: ${totalAddedWords}` : 'Ни одно слово не было добавлено.');
                 });
-            } catch (error) {
+            } catch(error) {
                 alert('Не удалось загрузить слова из файла');
                 console.log(error)
             }

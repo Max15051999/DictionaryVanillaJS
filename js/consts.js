@@ -15,6 +15,10 @@ var GIST_TOKEN_NAME = 'gist_token';
 
 var LOCAL_STORAGE_GIST_KEY = 'gist_words';
 
+var GAME_WORDS_KEY = 'game_words';
+var IS_GAME_WITH_CARDS = 'is_game_with_cards';
+var PRIMARY_GAME_LANG = 'primary_game_lang';
+
 var DICT_LANG_KEY = 'dictLang';
 
 var CSV_FILE_DELIMITER = ';';
@@ -27,4 +31,12 @@ var langCodeMap = {
     'Английский (GB)' : 'en-GB',
     'Английский (US)' : 'en-US',
     'Немецкий' : 'de'
+}
+
+function shuffle(array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }

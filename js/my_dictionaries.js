@@ -14,7 +14,7 @@ if (dictPage === 'home' || dictPage === 'guess') {
 
             prepareEnviroment();
         });
-    } catch (error) {
+    } catch(error) {
 
     }
 } else {
@@ -67,7 +67,7 @@ function setDictionaries() {
         button.textContent = btnText;
         button.onclick = () => sessionStorage.setItem(DICT_LANG_KEY, uniqueLang);
 
-        href.href = dictPage === 'guess' ? 'guess_words.html' : 'dictionary.html';
+        href.href = dictPage === 'guess' || dictPage === 'guess_back' ? 'guess_words.html' : 'dictionary.html';
 
         href.appendChild(button);
 

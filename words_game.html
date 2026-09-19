@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/words_game.css">
+    <title></title>
+</head>
+<body>
+    <div class="header">
+        <input id="white" type="radio" value="white" name="theme" onclick="changeTheme('white');">
+        <label for="white">Светлая</label>
+        <input id="black" type="radio" value="black" name="theme" onclick="changeTheme('black');" checked>
+        <label for="black">Тёмная</label><br>
+        <a style="color: red; cursor: pointer;" onclick="if (confirm('Вы действительно хотите выйти?')) window.location.href = 'index.html'">В начало</a>
+    </div>
+
+    <br><br>
+
+    <div class="container" style="display: block;">
+        <h1></h1>
+
+        <label id="total-words-label" style="font-size: 30px;"></label><br><br>
+
+        <img id="question-status" src="img/thinking_icon.png" style="width: 10%;"/><br>
+
+        <label id="right-answer" style="color: green; font-size: 30px;"></label>
+        <br><br><br>
+
+        <div id="symbols-div" style="visibility: hidden;">
+            <button onclick="addSpecialSymbolToInput('Ü');">Ü</button>
+            <button onclick="addSpecialSymbolToInput('ü');">ü</button>
+            <button onclick="addSpecialSymbolToInput('Ö');">Ö</button>
+            <button onclick="addSpecialSymbolToInput('ö');">ö</button>
+            <button onclick="addSpecialSymbolToInput('Ä');">Ä</button>
+            <button onclick="addSpecialSymbolToInput('ä');">ä</button>
+            <button onclick="addSpecialSymbolToInput('ẞ');">ẞ</button>
+        </div>
+
+        <select id="accents-selector" style="visibility: hidden;"></select>
+        <br><br>
+        <input type="checkbox" id="say_words_automatically_checkbox" onclick="if (this.checked) prepareToSayWord(String(document.getElementById('original-word').innerText), dictLang);">
+        <label for="say_words_automatically_checkbox">Произносить автоматически</label><br><br><br><br>
+
+        <div id="voice-div">
+            <label style="font-size: 150%;">1X</label>
+            <img class="word-say" title="Произнести" src="img/say_word_icon.png" onclick="prepareToSayWord(String(document.getElementById('original-word').innerHTML), dictLang);">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <label style="font-size: 150%;">0.5X</label>
+            <img class="word-say" title="Произнести" src="img/say_word_icon.png" onclick="prepareToSayWord(String(document.getElementById('original-word').innerHTML), dictLang, 0.5);">
+        </div>
+
+        <div class="word-for-translate">
+            <h2 title="Произнести (<Ctrl>)" id="original-word" onclick="prepareToSayWord(String(this.innerText), dictLang);" style="cursor: pointer;">ORIGINAL</h2>
+            <h3 id="transcription-word">TRANSCRIPTION</h3>
+
+            <div class="word-choose-input" style="display: none">
+                <input id="translate-input-word" type="text" title="Введите перевод" placeholder="Перевод...">
+                <br><br>
+            </div>
+
+            <div class="word-choose-cards" style="display: none">
+                <div class="word-card" onclick="readWordCardText(this);" data-idx="0">...</div><br>
+                <div class="word-card" onclick="readWordCardText(this);" data-idx="1">...</div><br>
+                <div class="word-card" onclick="readWordCardText(this);" data-idx="2">...</div><br>
+                <div class="word-card" onclick="readWordCardText(this);" data-idx="3">...</div><br>
+                <br><br>
+            </div>
+
+            <button id="check-answer" onclick="checkTranslateWord();">Готово</button>
+        </div><br><br><br><br><br><br>
+        <button onclick="if (confirm('Вы действительно хотите выйти?')) window.location.href = 'guess_words.html'">Назад</button>
+    </div>
+
+    <script src="js/consts.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/words_game.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

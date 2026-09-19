@@ -1,0 +1,65 @@
+#symbols-div {
+    width: 40%;
+    margin-left: 30%;
+    display: flex; /* Делаем контейнер flex-контейнером */
+    justify-content: center; /* Центрируем кнопки по горизонтали */
+}
+
+.word-for-translate {
+    width: 40%;
+    margin-left: 30%;
+    color: SaddleBrown;
+    font-size: 20px;
+    background: BurlyWood;
+    border: 5px solid DarkCyan;
+    border-radius: 10px;
+
+    @media (max-width:768px) {
+        margin-left: 0%;
+        width: 100%;
+    }
+}
+
+#translate-input-word {
+    width: 80%;
+    font-size: 25px;
+}
+
+#question-status {
+    width: 10%;
+    height: 10%;
+
+    @media (max-width:768px) {
+        width: 40%;
+        height: 40%;
+    }
+}
+
+.word-card {
+    width: 50%;
+    margin-left: 25%;
+    color: Black;
+    font-size: 20px;
+    background: BurlyWood;
+    border: 5px solid DarkCyan;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    @media (max-width:768px) {
+        margin-left: 25%;
+        width: 50%;
+    }
+}
+
+.word-card:hover {
+    border: 10px solid Red !important;
+    width: 60% !important;
+    margin-left: 20% !important;
+}
+
+.active-word-card {
+    border: 10px solid Red;
+    width: 60%;
+    margin-left: 20%;
+}
