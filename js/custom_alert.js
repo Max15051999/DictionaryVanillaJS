@@ -34,19 +34,14 @@ function confirmModal() {
     modalOverlay.classList.remove('active');
 
     var key = '';
-    var visibility = '';
 
-    if (foreignRusBtn.checked) {
+    if (foreignRusBtn.checked)
         key = 'original';
-        visibility = 'visible';
-    } else {
+    else
         key = 'translate';
-        visibility = 'hidden';
-    }
 
     wordOriginalKey = key;
     wordTranslateKey = wordOriginalKey === 'original' ? 'translate' : 'original';
-    accentsSelector.style.visibility = visibility;
 
     withCards = wordCardsBtn.checked;
 
@@ -54,6 +49,7 @@ function confirmModal() {
     wordChooseCards.style.display = withCards ? 'block' : 'none';
 
     console.log(dictLang);
+    showHideSpecialSymbols(dictLang);
     fillAccents();
     setWordInfo();
 }

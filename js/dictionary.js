@@ -24,6 +24,8 @@ function setTitle() {
 }
 
 function setWords(words, startWordIndex) {
+    var imgWidth = '12%';
+    var imgHeight = '9%';
 
     words.forEach(dictWord => {
         let wordCard = document.createElement('div');
@@ -34,8 +36,8 @@ function setWords(words, startWordIndex) {
         var sayWordImg = document.createElement('img');
         sayWordImg.src = 'img/say_word_icon.png';
 
-        sayWordImg.style.width = '9%';
-        sayWordImg.style.height = '7%';
+        sayWordImg.style.width = imgWidth;
+        sayWordImg.style.height = imgHeight;
         sayWordImg.style.marginTop = '5%';
 
         var lang = dictWord['language'];
@@ -70,15 +72,15 @@ function setWords(words, startWordIndex) {
 
         deleteWordImg.src = 'img/delete_word_icon.png';
 
-        deleteWordImg.style.width = '5%';
-        deleteWordImg.style.height = '4%';
+        deleteWordImg.style.width = imgWidth;
+        deleteWordImg.style.height = imgHeight;
 
         deleteWordImg.title = 'Удалить слово';
 
         editWordImg.src = 'img/edit_icon.png';
 
-        editWordImg.style.width = '5%';
-        editWordImg.style.height = '4%';
+        editWordImg.style.width = imgWidth;
+        editWordImg.style.height = imgHeight;
 
         editWordImg.title = 'Редактировать слово';
 

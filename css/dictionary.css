@@ -1,6 +1,6 @@
 .input {
-    width: 30%;
-    height: 4%;
+    width: 300px;
+    height: 50px;
     background: white;
     font-size: 25px;
 }
@@ -58,8 +58,8 @@
 }
 
 #search-img {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     vertical-align: middle;
 }
 

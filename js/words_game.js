@@ -53,6 +53,8 @@ function fillAccents() {
                 accentsSelector.add(option);
             }
         }
+    } else {
+        accentsSelector.style.visibility = 'hidden';
     }
 }
 
