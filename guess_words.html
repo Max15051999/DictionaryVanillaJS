@@ -42,9 +42,24 @@
         <label for="word-text">Текст</label>
         <br><br><br>
 
+        <button id="chose-words" onclick="showCustomAlert();">Выбрать слова</button>
+
         <br><br><br><br><br><br>
         <a href="words_game.html"><button onclick="startGame();">Начать игру</button></a><br><br>
         <a href="my_dictionaries.html"><button onclick="sessionStorage.setItem('dictPage', 'guess_back')">Назад</button></a>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-title" id="modalTitle">Выбор слов для игры - <label id="custom-words-total-chose"></label></div>
+            <div class="modal-content" id="modalContent" onclick="customWordClick(event);">
+
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal(false);">Cancel</button>
+                <button class="btn-primary" onclick="confirmModal();">OK</button>
+            </div>
+        </div>
     </div>
 
     <script src="js/consts.js"></script>

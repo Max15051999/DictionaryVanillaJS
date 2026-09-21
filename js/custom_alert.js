@@ -61,7 +61,7 @@ if (dictLang.endsWith('ий')) {
     dictLang = dictLang.replace(/ий$/, 'ом');
 }
 
-rusForeignLabel.innerText = `С Русского на ${dictLang}`;
+rusForeignLabel.innerText = `С Русского на ${dictLang.replace(/ом$/, 'ий')}`;
 
 if (wordOriginalKey === 'original')
     foreignRusBtn.checked = true;

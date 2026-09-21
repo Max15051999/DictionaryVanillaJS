@@ -44,7 +44,7 @@ function setTitle() {
 
 function setLangs() {
 
-    var currentLang = sessionStorage.getItem(DICT_LANG_KEY);
+    // var currentLang = sessionStorage.getItem(DICT_LANG_KEY);
 
     for (var lang in langCodeMap) {
         var hasAccent = lang.includes('(');
@@ -72,14 +72,14 @@ function setLangs() {
         langsSelector.add(option);
     }
 
-    currentLang = currentLang.replace(/ий$/, 'ом');
+//    currentLang = currentLang.replace(/ий$/, 'ом');
 
-    if (currentLang === 'Английском')
-        currentLang += ' (GB)';
-
-    langsSelector.value = currentLang;
-
-    showHideSpecialSymbols(currentLang);
+//    if (currentLang === 'Английском')
+//        currentLang += ' (GB)';
+//
+//    langsSelector.value = currentLang;
+//
+//    showHideSpecialSymbols(currentLang);
 }
 
 function enabledDisabledBtn(currentWord) {
@@ -135,6 +135,9 @@ function addChangeWordToGIST(changedWord) {
 
     try {
         getUpdatedWordsList().then(result => {
+
+            addChangeWordBtn.disabled = true;
+
             GISTWords = result;
 
             localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
@@ -145,6 +148,7 @@ function addChangeWordToGIST(changedWord) {
                 for (var GISTWord of GISTWords) {
                     if (GISTWord['original'].toLowerCase() === originalWord.toLowerCase()) {
                         alert('Данное слово уже содержится в словаре');
+                        addChangeWordBtn.disabled = false;
                         return;
                     }
                 }
@@ -178,6 +182,7 @@ function addChangeWordToGIST(changedWord) {
                     setWord(word);
                 } else {
                     alert('Редактируемое Вами слово было уже удалено из GIST!');
+                    addChangeWordBtn.disabled = false;
                     return;
                 }
 
@@ -214,14 +219,16 @@ function addChangeWordToGIST(changedWord) {
                         translateWordInput.value = '';
                         transcriptionInput.value = '';
                     }
-
+                    addChangeWordBtn.disabled = false;
                 } catch(error) {
                     alert('❌ Error updating GIST:', error.message);
+                    addChangeWordBtn.disabled = false;
                 }
             })();
         });
     } catch (error) {
         alert('❌ Error updating GIST:', error.message);
+        addChangeWordBtn.disabled = false;
     }
 }
 

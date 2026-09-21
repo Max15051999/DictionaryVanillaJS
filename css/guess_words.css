@@ -5,3 +5,96 @@
 #take-from-end-checkbox {
     cursor: pointer;
 }
+
+#chose-words {
+    width: 10%;
+    font-size: 20px;
+    color: #FFFFE0;
+    background: gray;
+    border-radius: 15px;
+    cursor: pointer;
+
+    @media (max-width:768px) {
+        width: 320px;
+    }
+}
+
+.modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        max-width: 500px;
+        max-height: 50vh;           /* ✅ Limit height to 50% of viewport */
+        display: flex;              /* ✅ Use flexbox */
+        flex-direction: column;     /* ✅ Stack children vertically */
+        width: 90%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .modal-content {
+        margin-bottom: 20px;
+        color: #555;
+        overflow-y: auto;           /* ✅ Enable vertical scroll */
+        flex: 1;                    /* ✅ Take remaining space */
+        min-height: 0;              /* ✅ Important for flexbox scrolling */
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .modal-buttons button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-primary {
+        background: #007bff;
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
