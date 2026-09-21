@@ -441,12 +441,10 @@ function uploadDict() {
                 });
             } catch(error) {
                 alert('Не удалось загрузить слова из файла');
-                console.log(error)
             }
         };
 
         reader.onerror = function(error) {
-            console.error('Error reading file:', error);
             alert('Ошибка чтения файла');
         };
 

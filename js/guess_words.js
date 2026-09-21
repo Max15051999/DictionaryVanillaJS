@@ -106,8 +106,6 @@ function startGame() {
         } else {
             while (total !== len)
                 gameWords.splice(--len)
-
-            console.log(gameWords)
         }
     }
 
@@ -140,9 +138,6 @@ function closeModal(isConfirm) {
     } else {
         gameWords = [];
     }
-
-    console.log(gameWords);
-
 }
 
 function confirmModal() {

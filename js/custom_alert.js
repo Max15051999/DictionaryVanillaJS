@@ -48,7 +48,6 @@ function confirmModal() {
     wordChooseInput.style.display = withCards ? 'none' : 'block';
     wordChooseCards.style.display = withCards ? 'block' : 'none';
 
-    console.log(dictLang);
     showHideSpecialSymbols(dictLang);
     fillAccents();
     setWordInfo();
