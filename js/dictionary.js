@@ -2,6 +2,7 @@
 
 var uploadDictBtn = document.querySelector('#upload-dict-btn');
 var fileInput = document.querySelector('#file-input');
+var symbolsDiv = document.querySelector('#symbols-div');
 var searchInput = document.querySelector('#search-input');
 var container = document.querySelector('.container');
 
@@ -21,6 +22,9 @@ function setTitle() {
 
     document.title = dictName;
     document.querySelector('h1').innerText = `${dictName} (${dictWords.length})`;
+
+    if (dictLang !== 'Немецкий')
+        symbolsDiv.style.display = 'none';
 }
 
 function setWords(words, startWordIndex) {
@@ -452,6 +456,10 @@ function uploadDict() {
     } else {
         alert('Вы не загрузили файл со словами');
     }
+}
+
+function addSpecialSymbolToInput(specialSymbol) {
+    searchInput.value += specialSymbol;
 }
 
 setTitle();
