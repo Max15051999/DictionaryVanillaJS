@@ -44,7 +44,7 @@ function setTitle() {
 
 function setLangs() {
 
-    // var currentLang = sessionStorage.getItem(DICT_LANG_KEY);
+    var currentLang = sessionStorage.getItem(DICT_LANG_KEY);
 
     for (var lang in langCodeMap) {
         var hasAccent = lang.includes('(');
@@ -72,14 +72,16 @@ function setLangs() {
         langsSelector.add(option);
     }
 
-//    currentLang = currentLang.replace(/ий$/, 'ом');
+    if (currentLang) {
+        currentLang = currentLang.replace(/ий$/, 'ом');
 
-//    if (currentLang === 'Английском')
-//        currentLang += ' (GB)';
-//
-//    langsSelector.value = currentLang;
-//
-//    showHideSpecialSymbols(currentLang);
+        if (currentLang === 'Английском')
+            currentLang += ' (GB)';
+
+        langsSelector.value = currentLang;
+
+        showHideSpecialSymbols(currentLang);
+    }
 }
 
 function enabledDisabledBtn(currentWord) {
