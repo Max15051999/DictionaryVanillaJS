@@ -11,6 +11,10 @@ var HEADERS = {
                 'X-GitHub-Api-Version': '2022-11-28'
               };
 
+var GOOGLE_API_HEADERS = {
+	'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+}
+
 var GIST_TOKEN_NAME = 'gist_token';
 
 var LOCAL_STORAGE_GIST_KEY = 'gist_words';
@@ -32,6 +36,10 @@ var langCodeMap = {
     'Английский (US)' : 'en-US',
     'Немецкий' : 'de'
 }
+
+var GOOGLE_API_KEY = 'AKfycbzYOnhBQib2cIaOM8XpNrn8g9EzsO8EGyB54rWGfI6kkE14DH7aEB2Ll_abEkMxwdOg';
+var GOOGLE_API = (word, target, source) => 'https://' + `script.google.com/macros/s/${GOOGLE_API_KEY}/exec?q=${word}&target=${target}&source=${source}`;
+
 
 function shuffle(array) {
   for (var i = array.length - 1; i > 0; i--) {

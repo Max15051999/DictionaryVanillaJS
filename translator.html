@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/translator.css">
+    <title>Переводчик</title>
+</head>
+<body>
+    <div class="header">
+        <input id="white" type="radio" value="white" name="theme" onclick="changeTheme('white');">
+        <label for="white">Светлая</label>
+        <input id="black" type="radio" value="black" name="theme" onclick="changeTheme('black');" checked>
+        <label for="black">Тёмная</label><br>
+        <a style="color: red;" href="index.html">В начало</a>
+    </div>
+
+    <div class="container" style="display: block;">
+        <h1>Переводчик</h1>
+
+        <hr><br><br><br>
+
+        <div id="symbols-div" style="visibility: hidden;">
+            <button onclick="addSpecialSymbolToInput('Ü');">Ü</button>
+            <button onclick="addSpecialSymbolToInput('ü');">ü</button>
+            <button onclick="addSpecialSymbolToInput('Ö');">Ö</button>
+            <button onclick="addSpecialSymbolToInput('ö');">ö</button>
+            <button onclick="addSpecialSymbolToInput('Ä');">Ä</button>
+            <button onclick="addSpecialSymbolToInput('ä');">ä</button>
+            <button onclick="addSpecialSymbolToInput('ẞ');">ẞ</button>
+        </div>
+
+        <div class="sides">
+            <div class="side">
+                <img src="img/say_word_icon.png" title="Произнести слово" onclick="prepareToSayWord(true);">
+                <br><br>
+                <select id="from-langs-selector" onchange="showHideSpecialSymbols(1);"></select>
+                <br><br>
+                <textarea id="input-text" class="word-input" placeholder="Введите текст для перевода..." oninput="textInputListener(this);"></textarea>
+            </div>
+            <div>
+                <button style="width: 100px; margin-top: 90px;" onclick="swapLangs();">SWAP</button>
+            </div>
+            <div class="side">
+                <img src="img/say_word_icon.png" title="Произнести слово" onclick="prepareToSayWord(false);">
+                <br><br>
+                <select id="to-langs-selector" onchange="showHideSpecialSymbols(2);"></select>
+                <br><br>
+                <textarea id="output-text" class="word-input" disabled placeholder="Перевод..."></textarea>
+            </div>
+        </div>
+
+        <br><br><br><br><br><br><br><br><br>
+
+        <button id="get-translate-btn" disabled onclick="getTranslate();">Перевести</button>
+        <button id="add-to-dict-btn" disabled>Добавить в словарь</button>
+        <a href="index.html"><button>Назад</button></a>
+
+    </div>
+
+    <script src="js/consts.js"></script>
+    <script src="js/translator.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>
