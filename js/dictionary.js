@@ -238,6 +238,13 @@ function sortWords(sortType) {
 
     var wordCards = document.querySelectorAll('.word-card');
 
+    var func = null;
+
+    if (dictLang === 'Английский')
+        func = (word, selector) => prepareSayWord(word, selector)
+    else
+        func = (word, selector) => sayWord(word, langCodeMap[dictLang]);
+
     dictWords.forEach((dictWord, idx) => {
         var wordCard = wordCards[idx];
 
@@ -250,7 +257,7 @@ function sortWords(sortType) {
         var dateTag = transcriptionDateTags[1];
 
         setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag,
-            () => prepareSayWord(dictWord['original'], langAccentSelector), dictWord);
+            () => func(dictWord['original'], langAccentSelector), dictWord);
     });
 }
 
