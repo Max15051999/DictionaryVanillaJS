@@ -35,6 +35,3 @@ async function getFileFromGIST(token) {
         return null;
     }
 }
-
-// localStorage.removeItem(GIST_TOKEN_NAME)
-// console.log(localStorage.getItem(GIST_TOKEN_NAME));

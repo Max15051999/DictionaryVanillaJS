@@ -9,6 +9,7 @@ var inputTextArea = document.querySelector('#input-text');
 var outputTextArea = document.querySelector('#output-text');
 
 var getTranslateBtn = document.querySelector('#get-translate-btn');
+var addToDictBtn = document.querySelector('#add-to-dict-btn');
 
 
 function fillLangsSelectors() {
@@ -95,6 +96,7 @@ function addSpecialSymbolToInput(specialSymbol) {
 function textInputListener(widget) {
     getTranslateBtn.disabled = widget.value.trim() === '';
     outputTextArea.value = '';
+    addToDictBtn.disabled = true;
 }
 
 function swapLangs() {
@@ -134,6 +136,7 @@ function getTranslate() {
                 }
 
                 getTranslateBtn.disabled = false;
+                addToDictBtn.disabled = false;
             } catch(error) {
                 alert(`При получении перевода возникла ошибка: ${error}`);
                 getTranslateBtn.disabled = false;
@@ -141,6 +144,84 @@ function getTranslate() {
         })();
     } else {
         alert('Вы не ввели текст для перевода');
+    }
+}
+
+function addToDict() {
+    var fromLang = fromLangsSelector.value;
+    var toLang = toLangsSelector.value;
+
+    if (fromLang === 'Русский' || toLang === 'Русский') {
+        var originalText = setBigFirstLetter(toLang === 'Русский' ? inputTextArea.value.trim() : outputTextArea.value.trim());
+        var translateText = setBigFirstLetter(toLang === 'Русский' ? outputTextArea.value.trim() : inputTextArea.value.trim());
+
+        if (originalText && translateText) {
+
+            var GISTWords = [];
+
+            getUpdatedWordsList().then(result => {
+
+                getTranslateBtn.disabled = true;
+                addToDictBtn.disabled = true;
+
+                GISTWords = result;
+
+                localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+
+                var word = {
+                    original: originalText,
+                    translate: translateText,
+                    transcription: '',
+                    language: (toLang === 'Русский' ? fromLang : toLang).split(' ')[0],
+                    dateToAdd: new Date().toISOString().replace('T', ' ').slice(0, 16)
+                }
+
+                for (var GISTWord of GISTWords) {
+                    if (GISTWord['original'].toLowerCase() === originalText.toLowerCase()) {
+                        alert('Данное слово уже содержится в словаре');
+                        return;
+                    }
+                }
+
+                GISTWords.push(word);
+
+                var updateData = {
+                    files: {
+                        [WORDS_FILE_NAME]: {
+                            content: JSON.stringify(GISTWords)
+                        }
+                    }
+                };
+
+                var token = localStorage.getItem(GIST_TOKEN_NAME);
+
+                (async () => {
+                    try {
+                        var updateResponse = await fetch(API, {
+                            method: 'PATCH',
+                            headers: {
+                                'Authorization': `token ${token}`,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/vnd.github.v3+json'
+                            },
+                            body: JSON.stringify(updateData)
+                        });
+
+                        localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+
+                        alert('✅ Слово успешно добавлено в GIST');
+                    } catch(error) {
+                        alert('❌ Error updating GIST:', error.message);
+                        console.log(error)
+                    }
+                })();
+
+            });
+        } else {
+            alert('Отсутствует перевод слова или само слово');
+        }
+    } else {
+        alert('Чтобы добавить слово в словарь, один из языков должен быть русским');
     }
 }
 
