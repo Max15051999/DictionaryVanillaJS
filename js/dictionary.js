@@ -27,66 +27,108 @@ function setTitle() {
         symbolsDiv.style.display = 'none';
 }
 
-function setWords(words, startWordIndex) {
+function setWords(words, startWordIndex, isExist) {
     var imgWidth = '12%';
     var imgHeight = '9%';
 
+    var wordCards = document.querySelectorAll('.word-card');
+
     words.forEach(dictWord => {
-        let wordCard = document.createElement('div');
-        wordCard.className = 'word-card';
-        wordCard.id = `word-${startWordIndex}`;
+        let wordCard = null;
+        var sayWordImg = null;
+        var sayWordImgFunc = null;
+        let langAccentSelector = null;
+        var originalWordTag = null;
+        var transcriptionTag = null;
+        var dateTag = null;
+        var deleteWordImg = null;
+        var editWordImg = null;
 
+        if (isExist) {
+            wordCard = wordCards[startWordIndex];
 
-        var sayWordImg = document.createElement('img');
-        sayWordImg.src = 'img/say_word_icon.png';
+            var imgTags = wordCard.querySelectorAll('img');
+            var h4Tags = wordCard.querySelectorAll('h4');
 
-        sayWordImg.style.width = imgWidth;
-        sayWordImg.style.height = imgHeight;
-        sayWordImg.style.marginTop = '5%';
+            sayWordImg = imgTags[0];
 
-        var lang = dictWord['language'];
+            if (dictLang === 'Английский') {
+                langAccentSelector = wordCard.querySelector('select');
+                sayWordImgFunc = () => prepareSayWord(dictWord['original'], langAccentSelector);
+            } else {
+                sayWordImgFunc = () => sayWord(dictWord['original'], langCodeMap[dictLang]);
+            }
 
-        var sayWordImgFunc;
+            originalWordTag = wordCard.querySelector('h1');
 
-        if (lang === 'Английский') {
-            let langAccentSelector = document.createElement('select');
+            transcriptionTag = h4Tags[0];
 
-            langAccentSelector.appendChild(new Option('GB', 'en-GB'));
-            langAccentSelector.appendChild(new Option('US', 'en-US'));
+            dateTag = h4Tags[1];
 
-            wordCard.appendChild(langAccentSelector);
-            wordCard.appendChild(document.createElement('br'));
+            deleteWordImg = imgTags[1];
 
-            sayWordImgFunc = () => prepareSayWord(dictWord['original'], langAccentSelector);
+            editWordImg = imgTags[2];
         } else {
-            sayWordImgFunc = () => sayWord(dictWord['original'], langCodeMap[lang]);
+            wordCard = document.createElement('div');
+            wordCard.className = 'word-card';
+            wordCard.id = `word-${startWordIndex}`;
+
+            sayWordImg = document.createElement('img');
+            sayWordImg.src = 'img/say_word_icon.png';
+
+            sayWordImg.style.width = imgWidth;
+            sayWordImg.style.height = imgHeight;
+            sayWordImg.style.marginTop = '5%';
+
+            if (dictLang === 'Английский') {
+                langAccentSelector = document.createElement('select');
+
+                langAccentSelector.appendChild(new Option('GB', 'en-GB'));
+                langAccentSelector.appendChild(new Option('US', 'en-US'));
+
+                wordCard.appendChild(langAccentSelector);
+                wordCard.appendChild(document.createElement('br'));
+
+                sayWordImgFunc = () => prepareSayWord(dictWord['original'], langAccentSelector);
+            } else {
+                sayWordImgFunc = () => sayWord(dictWord['original'], langCodeMap[dictLang]);
+            }
+
+            originalWordTag = document.createElement('h1');
+            originalWordTag.className = 'word';
+
+            transcriptionTag = document.createElement('h4');
+            transcriptionTag.style.color = 'brown';
+
+            dateTag = document.createElement('h4');
+            dateTag.style.color = 'brown';
+
+            deleteWordImg = document.createElement('img');
+            deleteWordImg.src = 'img/delete_word_icon.png';
+
+            deleteWordImg.style.width = imgWidth;
+            deleteWordImg.style.height = imgHeight;
+
+            deleteWordImg.title = 'Удалить слово';
+
+            editWordImg = document.createElement('img');
+
+            editWordImg.src = 'img/edit_icon.png';
+
+            editWordImg.style.width = imgWidth;
+            editWordImg.style.height = imgHeight;
+
+            editWordImg.title = 'Редактировать слово';
+
+            wordCard.appendChild(sayWordImg);
+            wordCard.appendChild(originalWordTag);
+            wordCard.appendChild(transcriptionTag);
+            wordCard.appendChild(dateTag);
+            wordCard.appendChild(deleteWordImg);
+            wordCard.appendChild(editWordImg);
+
+            container.appendChild(wordCard);
         }
-
-        var originalWordTag = document.createElement('h1');
-        originalWordTag.className = 'word';
-
-        var transcriptionTag = document.createElement('h4');
-        transcriptionTag.style.color = 'brown';
-
-        var dateTag = document.createElement('h4');
-        dateTag.style.color = 'brown';
-
-        var deleteWordImg = document.createElement('img');
-        var editWordImg = document.createElement('img');
-
-        deleteWordImg.src = 'img/delete_word_icon.png';
-
-        deleteWordImg.style.width = imgWidth;
-        deleteWordImg.style.height = imgHeight;
-
-        deleteWordImg.title = 'Удалить слово';
-
-        editWordImg.src = 'img/edit_icon.png';
-
-        editWordImg.style.width = imgWidth;
-        editWordImg.style.height = imgHeight;
-
-        editWordImg.title = 'Редактировать слово';
 
         deleteWordImg.onclick = function() {
             if (confirm(`Вы действительно хотите удалить слово ${setBigFirstLetter(dictWord['original'])} ?`)) {
@@ -146,15 +188,6 @@ function setWords(words, startWordIndex) {
         };
 
         setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag, sayWordImgFunc, dictWord);
-
-        wordCard.appendChild(sayWordImg);
-        wordCard.appendChild(originalWordTag);
-        wordCard.appendChild(transcriptionTag);
-        wordCard.appendChild(dateTag);
-        wordCard.appendChild(deleteWordImg);
-        wordCard.appendChild(editWordImg);
-
-        container.appendChild(wordCard);
 
         startWordIndex++;
     });
@@ -236,29 +269,7 @@ function sortWords(sortType) {
     else
         dictWords = dictWords.sort((wordInfo, wordInfo2) => new Date(wordInfo2['dateToAdd']) - new Date(wordInfo['dateToAdd']));
 
-    var wordCards = document.querySelectorAll('.word-card');
-
-    var func = null;
-
-    if (dictLang === 'Английский')
-        func = (word, selector) => prepareSayWord(word, selector)
-    else
-        func = (word, selector) => sayWord(word, langCodeMap[dictLang]);
-
-    dictWords.forEach((dictWord, idx) => {
-        var wordCard = wordCards[idx];
-
-        var transcriptionDateTags = wordCard.querySelectorAll('h4');
-
-        var langAccentSelector = wordCard.querySelector('select');
-        var sayWordImg = wordCard.querySelector('img');
-        var originalWordTag = wordCard.querySelector('h1');
-        var transcriptionTag = transcriptionDateTags[0];
-        var dateTag = transcriptionDateTags[1];
-
-        setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag,
-            () => func(dictWord['original'], langAccentSelector), dictWord);
-    });
+    setWords(dictWords, 0, true);
 }
 
 function setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag, sayWordImgFunc, dictWord) {
@@ -441,7 +452,7 @@ function uploadDict() {
                                     localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
 
                                     setTitle();
-                                    setWords(dictWords.splice(initLen), initLen);
+                                    setWords(dictWords.splice(initLen), initLen, false);
                                 } catch(error) {
                                     alert('❌ Error updating GIST:', error.message);
                                 }
@@ -470,4 +481,4 @@ function addSpecialSymbolToInput(specialSymbol) {
 }
 
 setTitle();
-setWords(dictWords, 0);
+setWords(dictWords, 0, false);
