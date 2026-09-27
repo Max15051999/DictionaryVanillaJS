@@ -175,7 +175,7 @@ function addChangeWordToGIST(changedWord) {
 
                 changedWord = word;
 
-                var idx = GISTWords.findIndex(el => el['original'] === changedWord['original']);
+                var idx = GISTWords.findIndex(el => el['original'].toLowerCase() === changedWord['original'].toLowerCase());
 
                 if (idx !== -1) {
                     GISTWords[idx] = word;
@@ -308,6 +308,7 @@ setTitle();
 setLangs();
 
 if (previousUrl === 'dict') {
+
     var w = JSON.parse(sessionStorage.getItem('editWord'));
 
     setWord(w);

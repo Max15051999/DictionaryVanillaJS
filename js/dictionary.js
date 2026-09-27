@@ -6,6 +6,12 @@ var symbolsDiv = document.querySelector('#symbols-div');
 var searchInput = document.querySelector('#search-input');
 var container = document.querySelector('.container');
 
+var divWithWordCards = document.createElement('div');
+divWithWordCards.id = 'main-div-with-words';
+divWithWordCards.onclick = () => divWithWordCardsOnClick(event);
+
+container.appendChild(divWithWordCards);
+
 var dictLang = sessionStorage.getItem(DICT_LANG_KEY);
 
 var dictWords = [];
@@ -15,6 +21,97 @@ try {
             .filter(GISTWord => GISTWord['language'] === dictLang);
 } catch(error) {
     dictWords = [];
+}
+
+function divWithWordCardsOnClick(event) {
+    var t = event.target;
+
+    var actionClass = t.className;
+    var parentElement = t.parentElement;
+
+    if (parentElement.className === 'word-card') {
+        var focusedWordIndex = parentElement.id.split('-')[1];
+        var focusedWord = dictWords[focusedWordIndex];
+
+        switch (actionClass) {
+            case 'speaker': {
+                if (dictLang === 'Английский') {
+                    var langAccentSelector = parentElement.querySelector('select');
+
+                    prepareSayWord(focusedWord['original'], langAccentSelector);
+                } else {
+                    sayWord(focusedWord['original'], langCodeMap[dictLang]);
+                }
+                break;
+            }
+            case 'word': {
+                if (t.innerText.toLowerCase() === focusedWord['original'].toLowerCase())
+                    t.innerText = setBigFirstLetter(focusedWord['translate']);
+                else
+                    t.innerText = setBigFirstLetter(focusedWord['original']);
+                break;
+            }
+            case 'editor': {
+                sessionStorage.setItem('prevPage', 'dict');
+                sessionStorage.setItem('editWord', JSON.stringify(focusedWord));
+                sessionStorage.setItem(DICT_LANG_KEY, dictLang);
+
+                window.location.href = 'add_change_word.html';
+                break;
+            }
+            case 'deletor': {
+                if (confirm(`Вы действительно хотите удалить слово ${setBigFirstLetter(focusedWord['original'])} ?`)) {
+                    var GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY)).filter((w) => w['original'].toLowerCase() !== focusedWord['original'].toLowerCase());
+
+                    var updateData = {
+                        files: {
+                            [WORDS_FILE_NAME]: {
+                                content: JSON.stringify(GISTWords)
+                            }
+                        }
+                    };
+
+                    var token = localStorage.getItem(GIST_TOKEN_NAME);
+
+                    (async () => {
+                        try {
+                            var updateResponse = await fetch(API, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Authorization': `token ${token}`,
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/vnd.github.v3+json'
+                                },
+                                body: JSON.stringify(updateData)
+                            });
+
+                            if (!updateResponse.ok) {
+                                alert(`При обновлении GIST возникла ошибка. Статус-код: ${updateResponse.status}`);
+                                return;
+                            }
+
+                            localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+
+                            alert(`Слово ${setBigFirstLetter(focusedWord['original'])} успешно удалено`)
+
+                            dictWords.splice(focusedWordIndex, 1);
+
+                            if (dictWords.length === 0) {
+                                window.location.href = 'my_dictionaries.html';
+                            } else {
+                                parentElement.style.display = 'none';
+                                setTitle();
+                            }
+
+                        } catch(error) {
+                            alert('❌ Error updating GIST:', error.message);
+                        }
+                    })();
+            }
+                break;
+            }
+        }
+    }
 }
 
 function setTitle() {
@@ -75,6 +172,7 @@ function setWords(words, startWordIndex, isExist) {
 
             sayWordImg = document.createElement('img');
             sayWordImg.src = 'img/say_word_icon.png';
+            sayWordImg.classList.add('speaker');
 
             sayWordImg.style.width = imgWidth;
             sayWordImg.style.height = imgHeight;
@@ -110,6 +208,7 @@ function setWords(words, startWordIndex, isExist) {
             deleteWordImg.style.height = imgHeight;
 
             deleteWordImg.title = 'Удалить слово';
+            deleteWordImg.className = 'deletor';
 
             editWordImg = document.createElement('img');
 
@@ -119,6 +218,7 @@ function setWords(words, startWordIndex, isExist) {
             editWordImg.style.height = imgHeight;
 
             editWordImg.title = 'Редактировать слово';
+            editWordImg.className = 'editor';
 
             wordCard.appendChild(sayWordImg);
             wordCard.appendChild(originalWordTag);
@@ -127,67 +227,12 @@ function setWords(words, startWordIndex, isExist) {
             wordCard.appendChild(deleteWordImg);
             wordCard.appendChild(editWordImg);
 
-            container.appendChild(wordCard);
+            divWithWordCards.appendChild(wordCard);
         }
 
-        deleteWordImg.onclick = function() {
-            if (confirm(`Вы действительно хотите удалить слово ${setBigFirstLetter(dictWord['original'])} ?`)) {
-                var GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY)).filter((w) => w['original'].toLowerCase() !== dictWord['original'].toLowerCase());
-
-                var updateData = {
-                    files: {
-                        [WORDS_FILE_NAME]: {
-                            content: JSON.stringify(GISTWords)
-                        }
-                    }
-                };
-
-                var token = localStorage.getItem(GIST_TOKEN_NAME);
-
-                (async () => {
-                    try {
-                        var updateResponse = await fetch(API, {
-                            method: 'PATCH',
-                            headers: {
-                                'Authorization': `token ${token}`,
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/vnd.github.v3+json'
-                            },
-                            body: JSON.stringify(updateData)
-                        });
-
-                        if (!updateResponse.ok)
-                            throw new Error(`Failed to update Gist: ${updateResponse.status}`);
-
-                        localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
-
-                        alert(`Слово ${setBigFirstLetter(dictWord['original'])} успешно удалено`)
-
-                        dictWords.splice(startWordIndex, 1);
-
-                        if (dictWords.length === 0) {
-                            window.location.href = 'my_dictionaries.html';
-                        } else {
-                            wordCard.style.display = 'none';
-                            setTitle();
-                        }
-
-                    } catch(error) {
-                        alert('❌ Error updating GIST:', error.message);
-                    }
-                })();
-            }
-        }
-
-        editWordImg.onclick = function() {
-            sessionStorage.setItem('prevPage', 'dict');
-            sessionStorage.setItem('editWord', JSON.stringify(dictWord));
-            sessionStorage.setItem(DICT_LANG_KEY, dictLang);
-
-            window.location.href = 'add_change_word.html';
-        };
-
-        setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag, sayWordImgFunc, dictWord);
+        originalWordTag.innerText = setBigFirstLetter(dictWord['original']);
+        transcriptionTag.innerText = dictWord['transcription'];
+        dateTag.innerText = dictWord['dateToAdd'];
 
         startWordIndex++;
     });
@@ -270,20 +315,6 @@ function sortWords(sortType) {
         dictWords = dictWords.sort((wordInfo, wordInfo2) => new Date(wordInfo2['dateToAdd']) - new Date(wordInfo['dateToAdd']));
 
     setWords(dictWords, 0, true);
-}
-
-function setWidgetsProps(sayWordImg, originalWordTag, transcriptionTag, dateTag, sayWordImgFunc, dictWord) {
-    sayWordImg.onclick = sayWordImgFunc;
-    originalWordTag.innerText = setBigFirstLetter(dictWord['original']);
-    transcriptionTag.innerText = dictWord['transcription'];
-    dateTag.innerText = dictWord['dateToAdd'];
-
-    originalWordTag.onclick = function() {
-        if (this.innerText.toLowerCase() === dictWord['original'].toLowerCase())
-            this.innerText = setBigFirstLetter(dictWord['translate']);
-        else
-            this.innerText = setBigFirstLetter(dictWord['original']);
-    }
 }
 
 function deleteAllWords() {
@@ -452,7 +483,7 @@ function uploadDict() {
                                     localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
 
                                     setTitle();
-                                    setWords(dictWords.splice(initLen), initLen, false);
+                                    setWords([...dictWords].splice(initLen), initLen, false);
                                 } catch(error) {
                                     alert('❌ Error updating GIST:', error.message);
                                 }
