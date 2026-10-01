@@ -15,6 +15,8 @@ container.appendChild(divWithWordCards);
 var dictLang = sessionStorage.getItem(DICT_LANG_KEY);
 
 var dictWords = [];
+var checkedWords = {};
+var checkedWordsCounter = 0;
 
 try {
     var dictWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY))
@@ -100,7 +102,9 @@ function divWithWordCardsOnClick(event) {
                                 window.location.href = 'my_dictionaries.html';
                             } else {
                                 parentElement.style.display = 'none';
+                                parentElement.remove();
                                 setTitle();
+                                updateWordCardIds();
                             }
 
                         } catch(error) {
@@ -108,6 +112,16 @@ function divWithWordCardsOnClick(event) {
                         }
                     })();
             }
+                break;
+            }
+            case 'checker': {
+                if (t.checked) {
+                    checkedWords[focusedWord['original']] = {'word': focusedWord, 'card': parentElement};
+                    checkedWordsCounter++;
+                } else {
+                    delete checkedWords[focusedWord['original']];
+                    checkedWordsCounter--;
+                }
                 break;
             }
         }
@@ -118,7 +132,7 @@ function setTitle() {
     var dictName = `${dictLang} словарь`;
 
     document.title = dictName;
-    document.querySelector('h1').innerText = `${dictName} (${dictWords.length})`;
+    document.querySelector('h1').innerText = `${dictName} (${dictWords.length} ${chooseRightEnding('слов', ['о', 'а', ''], dictWords.length)})`;
 
     if (dictLang !== 'Немецкий')
         symbolsDiv.style.display = 'none';
@@ -140,6 +154,8 @@ function setWords(words, startWordIndex, isExist) {
         var dateTag = null;
         var deleteWordImg = null;
         var editWordImg = null;
+        var wordChecker = null;
+        var wordCheckerLabel = null;
 
         if (isExist) {
             wordCard = wordCards[startWordIndex];
@@ -220,12 +236,26 @@ function setWords(words, startWordIndex, isExist) {
             editWordImg.title = 'Редактировать слово';
             editWordImg.className = 'editor';
 
+            wordChecker = document.createElement('input');
+            wordChecker.type = 'checkbox';
+            wordChecker.id = `checker-${startWordIndex}`;
+            wordChecker.className = 'checker';
+            wordChecker.style.marginLeft = '120%';
+
+            wordCheckerLabel = document.createElement('label');
+            wordCheckerLabel.innerText = 'Выделить';
+            wordCheckerLabel.style.fontSize = '20px';
+            wordCheckerLabel.style.marginLeft = '115%';
+            wordCheckerLabel.htmlFor = `checker-${startWordIndex}`;
+
             wordCard.appendChild(sayWordImg);
             wordCard.appendChild(originalWordTag);
             wordCard.appendChild(transcriptionTag);
             wordCard.appendChild(dateTag);
             wordCard.appendChild(deleteWordImg);
             wordCard.appendChild(editWordImg);
+            wordCard.appendChild(wordChecker);
+            wordCard.appendChild(wordCheckerLabel);
 
             divWithWordCards.appendChild(wordCard);
         }
@@ -262,7 +292,7 @@ function searchWordByInput() {
                 var wordCard = document.querySelector(`#word-${idx}`);
                 wordCard.style.display = 'block';
             });
-            document.querySelector('h1').innerText = document.querySelector('h1').innerText.replace(/\d+/g, dictWords.length);
+            document.querySelector('h1').innerText = document.querySelector('h1').innerText.replace(/\([^)]*\)/g, `(${dictWords.length} ${chooseRightEnding('слов', ['о', 'а', ''], dictWords.length)})`);
     }
 
     var findWordIndexes = new Set();
@@ -296,7 +326,7 @@ function searchWordByInput() {
                 wordCard.style.display = display;
             });
 
-            document.querySelector('h1').innerText = document.querySelector('h1').innerText.replace(/\d+/g, totalMatches);
+            document.querySelector('h1').innerText = document.querySelector('h1').innerText.replace(/\([^)]*\)/g, `(${totalMatches} ${chooseRightEnding('слов', ['о', 'а', ''], totalMatches)})`);
         }
     } else {
         alert('Совпадений не найдено');
@@ -318,45 +348,83 @@ function sortWords(sortType) {
 }
 
 function deleteAllWords() {
-    if (confirm('Вы действительно хотите удалить все слова из этого словаря?')) {
-        var GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY));
+    var remainWords = [];
+    var deletedWords = [];
 
-        var uniqueOriginals = new Set(dictWords.map(dictWord => dictWord['original']));
+    if (checkedWordsCounter === 0) {
+        if (confirm('Вы действительно хотите удалить все слова из этого словаря?'))
+            deletedWords = dictWords;
+        else
+            return;
+    } else {
+        if (confirm(`Вы действительно хотите удалить ${checkedWordsCounter} ${chooseRightEnding('слов', ['о', 'а', ''], checkedWordsCounter)} из этого словаря?`))
+            deletedWords = Object.values(checkedWords).map(el => el['word']);
+        else
+            return;
+    }
 
-        GISTWords = GISTWords.filter(GISTWord => GISTWord['language'] !== dictLang && !uniqueOriginals.has(GISTWord['original']));
+    var GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY));
+    var uniqueOriginals = new Set(deletedWords.map(deletedWord => `${deletedWord['original']}-${deletedWord['language']}`));
+    remainWords = GISTWords.filter(GISTWord => !uniqueOriginals.has(`${GISTWord['original']}-${GISTWord['language']}`));
 
-        var updateData = {
-            files: {
-                [WORDS_FILE_NAME]: {
-                    content: JSON.stringify(GISTWords)
-                }
+    var updateData = {
+        files: {
+            [WORDS_FILE_NAME]: {
+                content: JSON.stringify(remainWords)
             }
-        };
+        }
+    };
 
-        var token = localStorage.getItem(GIST_TOKEN_NAME);
+    var token = localStorage.getItem(GIST_TOKEN_NAME);
 
-        (async () => {
-            try {
-                var updateResponse = await fetch(API, {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': `token ${token}`,
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/vnd.github.v3+json'
-                    },
-                    body: JSON.stringify(updateData)
+    (async () => {
+        try {
+            var updateResponse = await fetch(API, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify(updateData)
+            });
+
+            localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(remainWords));
+
+            if (checkedWordsCounter > 0 && checkedWordsCounter !== dictWords.length) {
+
+                dictWords = dictWords.filter(dictWord => !checkedWords.hasOwnProperty(dictWord['original']));
+
+                Object.values(checkedWords).map(el => el['card']).forEach(card => {
+                    card.style.display = 'none';
+                    card.remove();
                 });
 
-                localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+                setTitle();
 
+                checkedWords = {};
+                checkedWordsCounter = 0;
+
+                updateWordCardIds();
+
+                console.log(divWithWordCards)
+                console.log(dictWords)
+            } else {
                 alert('Все слова из данного словаря успешно удалены');
-
                 window.location.href = 'my_dictionaries.html';
-            } catch(error) {
-                alert('❌ Error updating GIST:', error.message);
             }
-        })();
-    }
+
+        } catch(error) {
+            alert('❌ Error updating GIST:', error.message);
+            console.log(error)
+        }
+    })();
+}
+
+function updateWordCardIds() {
+    var idx = 0;
+    for (var cardDiv of divWithWordCards.children)
+        cardDiv.id = `word-${idx++}`;
 }
 
 function downloadDict() {

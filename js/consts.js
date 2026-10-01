@@ -48,3 +48,22 @@ function shuffle(array) {
   }
   return array;
 }
+
+function chooseRightEnding(base, possibleEndings, total) {
+    // base - слов
+    // ends - ['о', 'а', '']
+
+    if (possibleEndings.length !== 3)
+        return base;
+
+    var lastDigit = total % 10;
+
+    if (lastDigit === 0)
+        return base + possibleEndings[2];
+    else if ((total !== 11 && lastDigit === 1))
+        return base + possibleEndings[0];
+    else if ((total < 12 || total > 14) && (lastDigit >= 2 && lastDigit <= 4))
+        return base + possibleEndings[1];
+    else
+        return base + possibleEndings[2];
+}
