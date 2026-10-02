@@ -43,13 +43,20 @@ function confirmModal() {
     wordOriginalKey = key;
     wordTranslateKey = wordOriginalKey === 'original' ? 'translate' : 'original';
 
+    if ((dictLang === 'Английский' || dictLang === 'Английском') && wordOriginalKey === 'original')
+        accentsSelector.style.visibility = 'visible';
+    else
+        accentsSelector.style.visibility = 'hidden';
+
     withCards = wordCardsBtn.checked;
 
     wordChooseInput.style.display = withCards ? 'none' : 'block';
     wordChooseCards.style.display = withCards ? 'block' : 'none';
 
+    gameWords = shuffle(gameWords);
+
     showHideSpecialSymbols(dictLang);
-    fillAccents();
+    // fillAccents();
     setWordInfo();
 }
 

@@ -5,6 +5,7 @@ var dictLang = sessionStorage.getItem(DICT_LANG_KEY);
 var gameWords = [];
 var gameWordIndex = 0;
 var withCards = localStorage.getItem(IS_GAME_WITH_CARDS) === '1';
+var isDictation = localStorage.getItem(IS_DICTATION_WORDS) === '1';
 
 var totalWordsLabel = document.querySelector('#total-words-label');
 
@@ -44,7 +45,7 @@ var hasIncrementWrong = false;
 
 function fillAccents() {
 
-    if ((dictLang === 'Английский' || dictLang === 'Английском') && wordOriginalKey == 'original') {
+    if ((dictLang === 'Английский' || dictLang === 'Английском') && wordOriginalKey === 'original') {
         accentsSelector.style.visibility = 'visible';
 
         for (var lang in langCodeMap) {
@@ -65,7 +66,11 @@ function setTitle() {
     if (dictLang.endsWith('ий'))
        dictLang = dictLang.replace(/ий$/, 'ом');
 
-    var title = `Угадай слова на ${dictLang}`;
+    var title = '';
+    if (isDictation)
+        title = `Под диктовку на ${dictLang}`;
+    else
+        title = `Угадай слова на ${dictLang}`;
 
     document.title = title;
     document.querySelector('h1').innerText = title;
@@ -119,7 +124,7 @@ function readWordCardText(card) {
 function showHideSpecialSymbols(lang) {
     var visibility = '';
 
-    if (lang !== 'Немецком' || withCards || wordOriginalKey === 'original')
+    if (lang !== 'Немецком' || withCards || wordOriginalKey === 'original' && !isDictation)
         visibility = 'hidden';
     else
         visibility = 'visible';
@@ -131,12 +136,15 @@ function setWordInfo() {
 
     if (gameWordIndex < totalWords) {
         currentWord = gameWords[gameWordIndex];
-        originalWordLabel.innerText = currentWord[wordOriginalKey];
-        transcriptionWordLabel.innerText = wordOriginalKey === 'original' ? currentWord['transcription'] : '';
+
+        if (!isDictation) {
+            originalWordLabel.innerText = currentWord[wordOriginalKey];
+            transcriptionWordLabel.innerText = wordOriginalKey === 'original' ? currentWord['transcription'] : '';
+        }
 
         translateWordInput.focus();
 
-        if (sayWordsAutomaticallyCheckbox.checked)
+        if (sayWordsAutomaticallyCheckbox.checked || isDictation)
             prepareToSayWord(currentWord[wordOriginalKey], dictLang);
 
         totalWordsLabel.innerText = `${gameWordIndex + 1}/${totalWords}`;
@@ -173,6 +181,9 @@ function setWordInfo() {
 
 function prepareToSayWord(word, lang, rate=1) {
 
+    if (isDictation)
+        word = currentWord[wordOriginalKey];
+
     if (word === '')
         return;
 
@@ -200,7 +211,6 @@ function prepareToSayWord(word, lang, rate=1) {
    if (lang === 'Английский')
        lang += ' ' + code;
 
-   console.log(lang)
    sayWord(word, langCodeMap[lang], rate);
 }
 
@@ -217,7 +227,7 @@ function checkTranslateWord() {
 
         var wordVariants = rightAnswer.split(',');
 
-        if (wordVariants.length > 1 && !withCards) {
+        if (wordVariants.length > 1 && !withCards && !isDictation) {
 
             wordVariants.forEach(word => {
                 if (replaceSpecialSyms(word.toLocaleLowerCase().trim()) === translate) {
@@ -225,6 +235,8 @@ function checkTranslateWord() {
                     return;
                 }
             });
+        } else if (isDictation && wordOriginalKey !== 'translate') {
+            isAnswerRight = translate === replaceSpecialSyms(currentWord[wordOriginalKey].toLocaleLowerCase());
         } else {
             isAnswerRight = translate === replaceSpecialSyms(rightAnswer.toLocaleLowerCase());
         }
@@ -254,7 +266,7 @@ function checkTranslateWord() {
         }
 
         questionStatusImg.src = imgSrc;
-        rightAnswerLabel.innerText = rightAnswer;
+        rightAnswerLabel.innerText = isDictation && wordOriginalKey !== 'translate' ? `${currentWord[wordOriginalKey]} (${rightAnswer})` : rightAnswer;
         translateWordInput.value = '';
     } else {
         alert('Введите перевод слова');

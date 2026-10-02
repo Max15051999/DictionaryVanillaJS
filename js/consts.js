@@ -22,6 +22,7 @@ var LOCAL_STORAGE_GIST_KEY = 'gist_words';
 var GAME_WORDS_KEY = 'game_words';
 var IS_GAME_WITH_CARDS = 'is_game_with_cards';
 var PRIMARY_GAME_LANG = 'primary_game_lang';
+var IS_DICTATION_WORDS = 'is_dictation_words';
 
 var DICT_LANG_KEY = 'dictLang';
 

@@ -43,7 +43,7 @@ function setTitle() {
     var title = `Игра в слова на ${dictLang}`;
 
     document.title = title;
-    document.querySelector('h1').innerText = `${title} (${wordsLen})`;
+    document.querySelector('h1').innerText = `${title} (${wordsLen} ${chooseRightEnding('слов', ['о', 'а', ''], wordsLen)})`;
 }
 
 function setWidgets() {
@@ -65,9 +65,10 @@ function onChangeTotalWords(widget) {
     }
 }
 
-function startGame() {
+function startGame(isDictation) {
     var total = +totalWordsInput.value;
     var withCards = wordCardsBtn.checked ? '1' : '0';
+    var dictation = isDictation ? '1' : '0';
 
     if (total <= 0 || total > wordsLen) {
         alert('Задано неверное количество слов');
@@ -113,6 +114,7 @@ function startGame() {
 
     localStorage.setItem(PRIMARY_GAME_LANG, primaryGameLang);
     localStorage.setItem(GAME_WORDS_KEY, JSON.stringify(gameWords));
+    localStorage.setItem(IS_DICTATION_WORDS, dictation);
     localStorage.setItem(IS_GAME_WITH_CARDS, withCards);
 }
 
