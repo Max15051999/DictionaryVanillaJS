@@ -285,7 +285,7 @@ function sayWord(word, lang, rate=1) {
 }
 
 function searchWordByInput() {
-    var inputWord = searchInput.value.toLowerCase().trim();
+    var inputWord = replaceSpecialSyms(searchInput.value.toLowerCase().trim());
 
     if (inputWord === '') {
             dictWords.forEach((_, idx) => {
@@ -297,9 +297,9 @@ function searchWordByInput() {
 
     var findWordIndexes = new Set();
     dictWords.forEach((word, idx) => {
-        if (word['original'].toLowerCase().includes(inputWord)) {
+        if (replaceSpecialSyms(word['original'].toLowerCase()).includes(inputWord)) {
             findWordIndexes.add(idx);
-        } else if (word['translate'].toLowerCase().includes(inputWord)) {
+        } else if (replaceSpecialSyms(word['translate'].toLowerCase()).includes(inputWord)) {
             findWordIndexes.add(idx);
         }
     });

@@ -286,23 +286,6 @@ function sayWord(word, lang, rate=1) {
     // speechSynthesis.cancel();
 }
 
-function replaceSpecialSyms(string) {
-    var splSyms = {
-        'ё': 'е',
-        'ä': 'ae',
-        'ö': 'oe',
-        'ü': 'ue',
-        'ß': 'ss',
-    }
-
-    for (var [key, value] of Object.entries(splSyms))
-        string = string.replaceAll(key, value);
-
-    string = string.replaceAll(/[\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202F]/g, '');
-
-    return string;
-}
-
 function addSpecialSymbolToInput(symbol) {
     translateWordInput.value += symbol;
 }
