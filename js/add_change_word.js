@@ -173,7 +173,7 @@ function addChangeWordToGIST(changedWord) {
 
                 successMsg = 'Слово успешно изменено';
 
-                changedWord = word;
+                // changedWord = word;
 
                 var idx = GISTWords.findIndex(el => el['original'].toLowerCase() === changedWord['original'].toLowerCase());
 
