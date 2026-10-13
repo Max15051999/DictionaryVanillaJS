@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/add_change_note.css">
+</head>
+<body>
+    <div class="header">
+        <input id="white" type="radio" value="white" name="theme" onclick="changeTheme('white');">
+        <label for="white">Светлая</label>
+        <input id="black" type="radio" value="black" name="theme" onclick="changeTheme('black');" checked>
+        <label for="black">Тёмная</label><br>
+        <a style="color: red;" href="index.html">В начало</a>
+    </div>
+
+    <br><br>
+
+    <div class="container">
+        <h1></h1>
+
+        <hr><br><br><br>
+
+        <div id="symbols-div" style="visibility: hidden;">
+            <button onclick="addSpecialSymbolToInput('Ü');">Ü</button>
+            <button onclick="addSpecialSymbolToInput('ü');">ü</button>
+            <button onclick="addSpecialSymbolToInput('Ö');">Ö</button>
+            <button onclick="addSpecialSymbolToInput('ö');">ö</button>
+            <button onclick="addSpecialSymbolToInput('Ä');">Ä</button>
+            <button onclick="addSpecialSymbolToInput('ä');">ä</button>
+            <button onclick="addSpecialSymbolToInput('ẞ');">ẞ</button>
+        </div>
+
+        <br><br>
+
+        <label class="label" for="note-input">Заметка на </label>
+        <select id="langs-selector" onchange="showHideSpecialSymbols(this.value);"></select>
+        <label class="label" for="note-input">*</label>
+
+        <br><br>
+
+        <input class="input" id="note-input" placeholder="Введите название..."><label class="label" onclick="clearInputField('name')">X</label>
+
+        <br><br><br>
+
+        <label class="label" for="note-content">Содержание заметки*</label><br><br>
+        <textarea id="note-content" placeholder="Введите текст..."></textarea><label class="label" onclick="clearInputField('content')">X</label>
+        <br><br><br>
+        <button id="add-change-note-btn" onclick="addChangeNoteToGIST(null);"></button>
+
+        <br>
+        <a href="dictionary.html"><button>Назад</button></a>
+    </div>
+
+    <script src="js/consts.js"></script>
+    <script src="js/token.js"></script>
+    <script src="js/add_change_note.js"></script>
+    <script src="js/theme.js"></script>
+</body>
+</html>

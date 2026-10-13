@@ -135,10 +135,10 @@ function addChangeWordToGIST(changedWord) {
         return;
     }
 
-    try {
-        getUpdatedWordsList().then(result => {
+    addChangeWordBtn.disabled = true;
 
-            addChangeWordBtn.disabled = true;
+    try {
+        getUpdatedList(WORDS_GIST_ID, WORDS_FILE_NAME).then(result => {
 
             GISTWords = result;
 
@@ -200,9 +200,11 @@ function addChangeWordToGIST(changedWord) {
 
             var token = localStorage.getItem(GIST_TOKEN_NAME);
 
+            var api = BASE_API + WORDS_GIST_ID;
+
             (async () => {
                 try {
-                    var updateResponse = await fetch(API, {
+                    var updateResponse = await fetch(api, {
                         method: 'PATCH',
                         headers: {
                             'Authorization': `token ${token}`,
@@ -221,7 +223,7 @@ function addChangeWordToGIST(changedWord) {
                         translateWordInput.value = '';
                         transcriptionInput.value = '';
                     }
-                    addChangeWordBtn.disabled = false;
+                    // addChangeWordBtn.disabled = false;
                 } catch(error) {
                     alert('❌ Error updating GIST:', error.message);
                     addChangeWordBtn.disabled = false;
@@ -251,20 +253,16 @@ function addSpecialSymbolToInput(specialSymbol) {
 }
 
 function clearInputField(fieldType) {
-    switch(fieldType) {
-        case 'origin':
-            originalWordInput.value = '';
-            originalWordInput.dispatchEvent(new Event('change'));
-            break;
-        case 'translate':
-            translateWordInput.value = '';
-            translateWordInput.dispatchEvent(new Event('change'));
-            break;
-        case 'transcription':
-            transcriptionInput.value = '';
-            transcriptionInput.dispatchEvent(new Event('change'));
-            break;
-    }
+
+    var input = originalWordInput;
+
+    if (fieldType === 'translate')
+        input = translateWordInput;
+    else if (fieldType === 'transcription')
+        input = transcriptionInput;
+
+    input.value = '';
+    input.dispatchEvent(new Event('change'));
 }
 
 function prepareToSayWord() {
@@ -315,7 +313,10 @@ if (previousUrl === 'dict') {
 
     var langCode = w['language'] === 'Английский' ? 'en' : langCodeMap[w['language']];
 
-    langsSelector.onchange = () => addChangeWordBtn.disabled = langsSelector.options[langsSelector.selectedIndex].code === langCode;
+    langsSelector.onchange = function() {
+        showHideSpecialSymbols(this.value);
+        addChangeWordBtn.disabled = langsSelector.options[langsSelector.selectedIndex].code === langCode;
+    }
 
     addChangeWordBtn.onclick = () => addChangeWordToGIST(w);
 }

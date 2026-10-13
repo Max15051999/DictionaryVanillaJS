@@ -6,6 +6,8 @@ var symbolsDiv = document.querySelector('#symbols-div');
 var searchInput = document.querySelector('#search-input');
 var container = document.querySelector('.container');
 
+var addNoteBtn = document.querySelector('#add-note-btn');
+
 var divWithWordCards = document.createElement('div');
 divWithWordCards.id = 'main-div-with-words';
 divWithWordCards.onclick = () => divWithWordCardsOnClick(event);
@@ -13,6 +15,10 @@ divWithWordCards.onclick = () => divWithWordCardsOnClick(event);
 container.appendChild(divWithWordCards);
 
 var dictLang = sessionStorage.getItem(DICT_LANG_KEY);
+var dictType = sessionStorage.getItem('dictType');
+
+if (dictType === 'words')
+    addNoteBtn.style.display = 'none';
 
 var dictWords = [];
 var checkedWords = {};
@@ -25,6 +31,8 @@ try {
     dictWords = [];
 }
 
+console.log(dictWords)
+
 function divWithWordCardsOnClick(event) {
     var t = event.target;
 
@@ -35,22 +43,27 @@ function divWithWordCardsOnClick(event) {
         var focusedWordIndex = parentElement.id.split('-')[1];
         var focusedWord = dictWords[focusedWordIndex];
 
+        var key = dictType === 'words' ? 'original' : 'name';
         switch (actionClass) {
             case 'speaker': {
-                if (dictLang === 'Английский') {
-                    var langAccentSelector = parentElement.querySelector('select');
+                if (dictType === 'words') {
+                    if (dictLang === 'Английский') {
+                        var langAccentSelector = parentElement.querySelector('select');
 
-                    prepareSayWord(focusedWord['original'], langAccentSelector);
-                } else {
-                    sayWord(focusedWord['original'], langCodeMap[dictLang]);
+                        prepareSayWord(focusedWord['original'], langAccentSelector);
+                    } else {
+                        sayWord(focusedWord['original'], langCodeMap[dictLang]);
+                    }
                 }
                 break;
             }
             case 'word': {
-                if (t.innerText.toLowerCase() === focusedWord['original'].toLowerCase())
-                    t.innerText = setBigFirstLetter(focusedWord['translate']);
-                else
-                    t.innerText = setBigFirstLetter(focusedWord['original']);
+                if (dictType === 'words') {
+                    if (t.innerText.toLowerCase() === focusedWord['original'].toLowerCase())
+                        t.innerText = setBigFirstLetter(focusedWord['translate']);
+                    else
+                        t.innerText = setBigFirstLetter(focusedWord['original']);
+                }
                 break;
             }
             case 'editor': {
@@ -58,12 +71,13 @@ function divWithWordCardsOnClick(event) {
                 sessionStorage.setItem('editWord', JSON.stringify(focusedWord));
                 sessionStorage.setItem(DICT_LANG_KEY, dictLang);
 
-                window.location.href = 'add_change_word.html';
+                var href = dictType === 'words' ? 'add_change_word.html' : 'add_change_note.html';
+                window.location.href = href;
                 break;
             }
             case 'deletor': {
-                if (confirm(`Вы действительно хотите удалить слово ${setBigFirstLetter(focusedWord['original'])} ?`)) {
-                    var GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY)).filter((w) => w['original'].toLowerCase() !== focusedWord['original'].toLowerCase());
+                if (confirm(`Вы действительно хотите удалить ${dictType === 'words' ? 'слово' : 'заметку'} ${setBigFirstLetter(focusedWord[key])} ?`)) {
+                    var GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY)).filter((w) => w[key].toLowerCase() !== focusedWord[key].toLowerCase());
 
                     var updateData = {
                         files: {
@@ -75,9 +89,11 @@ function divWithWordCardsOnClick(event) {
 
                     var token = localStorage.getItem(GIST_TOKEN_NAME);
 
+                    var api = BASE_API + (dictType === 'words' ? WORDS_GIST_ID : NOTES_GIST_ID);
+
                     (async () => {
                         try {
-                            var updateResponse = await fetch(API, {
+                            var updateResponse = await fetch(api, {
                                 method: 'PATCH',
                                 headers: {
                                     'Authorization': `token ${token}`,
@@ -94,7 +110,10 @@ function divWithWordCardsOnClick(event) {
 
                             localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
 
-                            alert(`Слово ${setBigFirstLetter(focusedWord['original'])} успешно удалено`)
+                            if (dictType === 'words')
+                                alert(`Слово ${setBigFirstLetter(focusedWord[key])} успешно удалено`);
+                            else
+                                alert(`Заметка ${focusedWord[key]} успешно удалена`);
 
                             dictWords.splice(focusedWordIndex, 1);
 
@@ -109,6 +128,7 @@ function divWithWordCardsOnClick(event) {
 
                         } catch(error) {
                             alert('❌ Error updating GIST:', error.message);
+                            console.log(error)
                         }
                     })();
             }
@@ -132,7 +152,19 @@ function setTitle() {
     var dictName = `${dictLang} словарь`;
 
     document.title = dictName;
-    document.querySelector('h1').innerText = `${dictName} (${dictWords.length} ${chooseRightEnding('слов', ['о', 'а', ''], dictWords.length)})`;
+
+    var wordBase = '';
+    var possibleEnds = [];
+
+    if (dictType === 'words') {
+        wordBase = 'слов';
+        possibleEnds = ['о', 'а', ''];
+    } else {
+        wordBase = 'замет';
+        possibleEnds = ['ка', 'ки', 'ток'];
+    }
+
+    document.querySelector('h1').innerText = `${dictName} (${dictWords.length} ${chooseRightEnding(wordBase, possibleEnds, dictWords.length)})`;
 
     if (dictLang !== 'Немецкий')
         symbolsDiv.style.display = 'none';
@@ -143,6 +175,8 @@ function setWords(words, startWordIndex, isExist) {
     var imgHeight = '9%';
 
     var wordCards = document.querySelectorAll('.word-card');
+
+    var dateTagIndex = dictType === 'words' ? 1 : 0;
 
     words.forEach(dictWord => {
         let wordCard = null;
@@ -163,20 +197,24 @@ function setWords(words, startWordIndex, isExist) {
             var imgTags = wordCard.querySelectorAll('img');
             var h4Tags = wordCard.querySelectorAll('h4');
 
-            sayWordImg = imgTags[0];
+            console.log(h4Tags)
 
-            if (dictLang === 'Английский') {
-                langAccentSelector = wordCard.querySelector('select');
-                sayWordImgFunc = () => prepareSayWord(dictWord['original'], langAccentSelector);
-            } else {
-                sayWordImgFunc = () => sayWord(dictWord['original'], langCodeMap[dictLang]);
+            if (dictType === 'words') {
+                sayWordImg = imgTags[0];
+
+                if (dictLang === 'Английский') {
+                    langAccentSelector = wordCard.querySelector('select');
+                    sayWordImgFunc = () => prepareSayWord(dictWord['original'], langAccentSelector);
+                } else {
+                    sayWordImgFunc = () => sayWord(dictWord['original'], langCodeMap[dictLang]);
+                }
+
+                transcriptionTag = h4Tags[0];
             }
 
             originalWordTag = wordCard.querySelector('h1');
 
-            transcriptionTag = h4Tags[0];
-
-            dateTag = h4Tags[1];
+            dateTag = h4Tags[dateTagIndex];
 
             deleteWordImg = imgTags[1];
 
@@ -186,33 +224,37 @@ function setWords(words, startWordIndex, isExist) {
             wordCard.className = 'word-card';
             wordCard.id = `word-${startWordIndex}`;
 
-            sayWordImg = document.createElement('img');
-            sayWordImg.src = 'img/say_word_icon.png';
-            sayWordImg.classList.add('speaker');
+            if (dictType === 'words') {
+                sayWordImg = document.createElement('img');
+                sayWordImg.src = 'img/say_word_icon.png';
+                sayWordImg.classList.add('speaker');
 
-            sayWordImg.style.width = imgWidth;
-            sayWordImg.style.height = imgHeight;
-            sayWordImg.style.marginTop = '5%';
+                sayWordImg.style.width = imgWidth;
+                sayWordImg.style.height = imgHeight;
+                sayWordImg.style.marginTop = '5%';
 
-            if (dictLang === 'Английский') {
-                langAccentSelector = document.createElement('select');
+                if (dictLang === 'Английский') {
+                    langAccentSelector = document.createElement('select');
 
-                langAccentSelector.appendChild(new Option('GB', 'en-GB'));
-                langAccentSelector.appendChild(new Option('US', 'en-US'));
+                    langAccentSelector.appendChild(new Option('GB', 'en-GB'));
+                    langAccentSelector.appendChild(new Option('US', 'en-US'));
 
-                wordCard.appendChild(langAccentSelector);
-                wordCard.appendChild(document.createElement('br'));
+                    wordCard.appendChild(langAccentSelector);
+                    wordCard.appendChild(document.createElement('br'));
 
-                sayWordImgFunc = () => prepareSayWord(dictWord['original'], langAccentSelector);
-            } else {
-                sayWordImgFunc = () => sayWord(dictWord['original'], langCodeMap[dictLang]);
+                    sayWordImgFunc = () => prepareSayWord(dictWord['original'], langAccentSelector);
+                } else {
+                    sayWordImgFunc = () => sayWord(dictWord['original'], langCodeMap[dictLang]);
+                }
             }
 
             originalWordTag = document.createElement('h1');
             originalWordTag.className = 'word';
 
-            transcriptionTag = document.createElement('h4');
-            transcriptionTag.style.color = 'brown';
+            if (dictType === 'words') {
+                transcriptionTag = document.createElement('h4');
+                transcriptionTag.style.color = 'brown';
+            }
 
             dateTag = document.createElement('h4');
             dateTag.style.color = 'brown';
@@ -223,7 +265,7 @@ function setWords(words, startWordIndex, isExist) {
             deleteWordImg.style.width = imgWidth;
             deleteWordImg.style.height = imgHeight;
 
-            deleteWordImg.title = 'Удалить слово';
+            deleteWordImg.title = 'Удалить';
             deleteWordImg.className = 'deletor';
 
             editWordImg = document.createElement('img');
@@ -233,7 +275,7 @@ function setWords(words, startWordIndex, isExist) {
             editWordImg.style.width = imgWidth;
             editWordImg.style.height = imgHeight;
 
-            editWordImg.title = 'Редактировать слово';
+            editWordImg.title = 'Редактировать';
             editWordImg.className = 'editor';
 
             wordChecker = document.createElement('input');
@@ -248,9 +290,14 @@ function setWords(words, startWordIndex, isExist) {
             wordCheckerLabel.style.marginLeft = '115%';
             wordCheckerLabel.htmlFor = `checker-${startWordIndex}`;
 
-            wordCard.appendChild(sayWordImg);
+            if (dictType === 'words')
+                wordCard.appendChild(sayWordImg);
+
             wordCard.appendChild(originalWordTag);
-            wordCard.appendChild(transcriptionTag);
+
+            if (dictType === 'words')
+                wordCard.appendChild(transcriptionTag);
+
             wordCard.appendChild(dateTag);
             wordCard.appendChild(deleteWordImg);
             wordCard.appendChild(editWordImg);
@@ -260,8 +307,11 @@ function setWords(words, startWordIndex, isExist) {
             divWithWordCards.appendChild(wordCard);
         }
 
-        originalWordTag.innerText = setBigFirstLetter(dictWord['original']);
-        transcriptionTag.innerText = dictWord['transcription'];
+        originalWordTag.innerText = setBigFirstLetter(dictWord[dictType === 'words' ? 'original' : 'name']);
+
+        if (dictType === 'words')
+            transcriptionTag.innerText = dictWord['transcription'];
+
         dateTag.innerText = dictWord['dateToAdd'];
 
         startWordIndex++;
@@ -339,10 +389,12 @@ function sortWords(sortType) {
     if (dictWords.length === 1)
         return;
 
-    if (sortType == 'alphabet')
-        dictWords = dictWords.sort((wordInfo, wordInfo2) => wordInfo['original'].localeCompare(wordInfo2['original']));
-    else
+    if (sortType == 'alphabet') {
+        var key = dictType === 'words' ? 'original' : 'name';
+        dictWords = dictWords.sort((wordInfo, wordInfo2) => wordInfo[key].localeCompare(wordInfo2[key]));
+    } else {
         dictWords = dictWords.sort((wordInfo, wordInfo2) => new Date(wordInfo2['dateToAdd']) - new Date(wordInfo['dateToAdd']));
+    }
 
     setWords(dictWords, 0, true);
 }

@@ -1,10 +1,12 @@
 'use strict'
 
-var GIST_ID = 'c381ba451d14c051e0307cea0bb76a92';
+var WORDS_GIST_ID = 'c381ba451d14c051e0307cea0bb76a92';
+var NOTES_GIST_ID = '760f26dee204ed440eed7bf97cf560c6';
 
 var WORDS_FILE_NAME = 'words.json';
+var NOTES_FILE_NAME = 'notes.json';
 
-var API = 'https://api.github.com/gists/' + GIST_ID;
+var BASE_API = 'https://api.github.com/gists/';
 
 var HEADERS = {
                 'Accept': 'application/vnd.github+json',

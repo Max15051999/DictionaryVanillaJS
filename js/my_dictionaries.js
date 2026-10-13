@@ -8,21 +8,35 @@ var uniqueLangs = new Set();
 var dictPage = sessionStorage.getItem('dictPage');
 
 if (dictPage === 'home' || dictPage === 'guess') {
+    var gistId = '';
+    var fileName = '';
+
+    if (sessionStorage.getItem('dictType') === 'words') {
+        gistId = WORDS_GIST_ID;
+        fileName = WORDS_FILE_NAME;
+    } else {
+        gistId = NOTES_GIST_ID;
+        fileName = NOTES_FILE_NAME;
+    }
+
     try {
-        getUpdatedWordsList().then(result => {
+        getUpdatedList(gistId, fileName).then(result => {
             GISTWords = result;
 
-            prepareEnviroment();
+            if (GISTWords)
+                prepareEnvironment();
+            else
+                window.location.href = 'index.html';
         });
     } catch(error) {
 
     }
 } else {
     GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY));
-    prepareEnviroment();
+    prepareEnvironment();
 }
 
-function prepareEnviroment() {
+function prepareEnvironment() {
     uniqueLangs = getUniqueLangs();
 
     document.querySelector('h1').innerText = `Мои словари (${uniqueLangs.size})`;
