@@ -43,6 +43,8 @@ var rightAnswerCounter = 0;
 var wrongAnswerCounter = 0;
 var hasIncrementWrong = false;
 
+var wrongAnswerWords = [];
+
 function fillAccents() {
 
     if ((dictLang === 'Английский' || dictLang === 'Английском') && wordOriginalKey === 'original') {
@@ -153,6 +155,7 @@ function setWordInfo() {
             setCardsVariants();
 
     } else {
+        console.log(wrongAnswerWords);
         var title = `Игра в слова на ${dictLang} окончена`;
 
         var gameOverMsg = `
@@ -262,6 +265,7 @@ function checkTranslateWord() {
             if (!hasIncrementWrong) {
                 wrongAnswerCounter++;
                 hasIncrementWrong = true;
+                wrongAnswerWords.push(currentWord);
             }
         }
 

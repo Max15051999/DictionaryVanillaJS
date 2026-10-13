@@ -159,7 +159,7 @@ function addToDict() {
 
             var GISTWords = [];
 
-            getUpdatedWordsList().then(result => {
+            getUpdatedList(WORDS_GIST_ID, WORDS_FILE_NAME).then(result => {
 
                 getTranslateBtn.disabled = true;
                 addToDictBtn.disabled = true;
@@ -195,9 +195,11 @@ function addToDict() {
 
                 var token = localStorage.getItem(GIST_TOKEN_NAME);
 
+                var api = BASE_API + WORDS_GIST_ID;
+
                 (async () => {
                     try {
-                        var updateResponse = await fetch(API, {
+                        var updateResponse = await fetch(api, {
                             method: 'PATCH',
                             headers: {
                                 'Authorization': `token ${token}`,

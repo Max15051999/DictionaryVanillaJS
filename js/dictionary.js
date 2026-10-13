@@ -31,8 +31,6 @@ try {
     dictWords = [];
 }
 
-console.log(dictWords)
-
 function divWithWordCardsOnClick(event) {
     var t = event.target;
 
@@ -128,7 +126,6 @@ function divWithWordCardsOnClick(event) {
 
                         } catch(error) {
                             alert('❌ Error updating GIST:', error.message);
-                            console.log(error)
                         }
                     })();
             }
@@ -196,8 +193,6 @@ function setWords(words, startWordIndex, isExist) {
 
             var imgTags = wordCard.querySelectorAll('img');
             var h4Tags = wordCard.querySelectorAll('h4');
-
-            console.log(h4Tags)
 
             if (dictType === 'words') {
                 sayWordImg = imgTags[0];
@@ -458,9 +453,6 @@ function deleteAllWords() {
                 checkedWordsCounter = 0;
 
                 updateWordCardIds();
-
-                console.log(divWithWordCards)
-                console.log(dictWords)
             } else {
                 alert('Все слова из данного словаря успешно удалены');
                 window.location.href = 'my_dictionaries.html';
@@ -468,7 +460,6 @@ function deleteAllWords() {
 
         } catch(error) {
             alert('❌ Error updating GIST:', error.message);
-            console.log(error)
         }
     })();
 }
