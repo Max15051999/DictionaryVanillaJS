@@ -168,8 +168,8 @@ function addChangeNoteToGIST(changedNote) {
                     if (changedNote === null) {
                         noteNameInput.value = '';
                         noteContentTextarea.value = '';
+                        addChangeNoteBtn.disabled = false;
                     }
-                    // addChangeNoteBtn.disabled = false;
                 } catch(error) {
                     alert('❌ Error updating GIST:', error.message);
                     console.log(error)

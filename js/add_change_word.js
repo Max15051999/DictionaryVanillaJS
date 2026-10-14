@@ -222,8 +222,8 @@ function addChangeWordToGIST(changedWord) {
                         originalWordInput.value = '';
                         translateWordInput.value = '';
                         transcriptionInput.value = '';
+                        addChangeWordBtn.disabled = false;
                     }
-                    // addChangeWordBtn.disabled = false;
                 } catch(error) {
                     alert('❌ Error updating GIST:', error.message);
                     addChangeWordBtn.disabled = false;

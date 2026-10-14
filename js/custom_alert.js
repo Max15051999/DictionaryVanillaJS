@@ -18,7 +18,7 @@ function showCustomAlert(title, gameOverMsg) {
     modalOverlay.classList.add('active');
 
     modalTitle.innerText = title;
-    gameOverMsgParagraph.innerText = gameOverMsg;
+    gameOverMsgParagraph.innerHTML = gameOverMsg;
 }
 
 function closeModal() {

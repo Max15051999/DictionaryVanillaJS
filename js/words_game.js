@@ -158,13 +158,17 @@ function setWordInfo() {
         console.log(wrongAnswerWords);
         var title = `Игра в слова на ${dictLang} окончена`;
 
+        var wrongAnswerStr = wrongAnswerCounter > 0 ?
+                                                    `<a href="#" style='color: red;'>Неправильных ответов: ${wrongAnswerCounter}</a>` :
+                                                    `<b>Неправильных ответов: ${wrongAnswerCounter}</b>`;
+
         var gameOverMsg = `
-                    Игра в слова окончена. Ваш результат:
-                    Всего вопросов: ${totalWords}
-                    Правильных ответов: ${rightAnswerCounter}
-                    Неправильных ответов: ${wrongAnswerCounter}
-                    Процент правильных ответов: ${((rightAnswerCounter * 100) / totalWords).toFixed(2)}%
-                    Начать заново?`;
+                    <b>Игра в слова окончена. Ваш результат:</b><br>
+                    <b>Всего вопросов: ${totalWords}</b><br>
+                    <b>Правильных ответов: ${rightAnswerCounter}</b><br>
+                    ${wrongAnswerStr}<br>
+                    <b>Процент правильных ответов: ${((rightAnswerCounter * 100) / totalWords).toFixed(2)}%</b><br>
+                    <b>Начать заново?</b>`;
 
         showCustomAlert(title, gameOverMsg);
 //
