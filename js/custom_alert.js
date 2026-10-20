@@ -27,7 +27,7 @@ function closeModal() {
     window.location.href = 'guess_words.html';
 }
 
-function confirmModal() {
+function confirmModal(withWrong = false, withCashWrong = false) {
     gameWordIndex = 0;
     rightAnswerCounter = 0;
     wrongAnswerCounter = 0;
@@ -53,7 +53,30 @@ function confirmModal() {
     wordChooseInput.style.display = withCards ? 'none' : 'block';
     wordChooseCards.style.display = withCards ? 'block' : 'none';
 
+    if (withCashWrong) {
+        gameWords = cashWrongAnswerWords;
+    } else if (!withWrong) {
+        try {
+            gameWords = JSON.parse(localStorage.getItem(GAME_WORDS_KEY));
+        } catch(error) {
+            alert('Нет слов для игры');
+            gameWords = wrongAnswerWords;
+        }
+    } else {
+        gameWords = wrongAnswerWords;
+    }
+
+    wrongAnswerWords = [];
+
     gameWords = shuffle(gameWords);
+    totalWords = gameWords.length;
+
+    if (withCards && totalWords < 4) {
+        withCards = false;
+
+        wordChooseInput.style.display = 'block';
+        wordChooseCards.style.display = 'none';
+    }
 
     showHideSpecialSymbols(dictLang);
     // fillAccents();

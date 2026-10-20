@@ -44,6 +44,7 @@ var wrongAnswerCounter = 0;
 var hasIncrementWrong = false;
 
 var wrongAnswerWords = [];
+var cashWrongAnswerWords = [];
 
 function fillAccents() {
 
@@ -156,11 +157,18 @@ function setWordInfo() {
 
     } else {
         console.log(wrongAnswerWords);
+
+        if (cashWrongAnswerWords.length === 0 && wrongAnswerCounter > 0)
+            cashWrongAnswerWords = [...wrongAnswerWords];
+
         var title = `Игра в слова на ${dictLang} окончена`;
 
         var wrongAnswerStr = wrongAnswerCounter > 0 ?
-                                                    `<a href="#" style='color: red;'>Неправильных ответов: ${wrongAnswerCounter}</a>` :
+                                                    `<a href="#" style='color: red;' onclick='confirmModal(true);'>Неправильных ответов: ${wrongAnswerCounter}</a>` :
                                                     `<b>Неправильных ответов: ${wrongAnswerCounter}</b>`;
+
+        var cashWrongAnswerStr = cashWrongAnswerWords.length > 0 ? `<a href="#" style='color: red;' onclick='confirmModal(false, true);'>Со всеми неправильными ответами</a>` :
+                                                                    '';
 
         var gameOverMsg = `
                     <b>Игра в слова окончена. Ваш результат:</b><br>
@@ -168,7 +176,7 @@ function setWordInfo() {
                     <b>Правильных ответов: ${rightAnswerCounter}</b><br>
                     ${wrongAnswerStr}<br>
                     <b>Процент правильных ответов: ${((rightAnswerCounter * 100) / totalWords).toFixed(2)}%</b><br>
-                    <b>Начать заново?</b>`;
+                    <b>Начать заново?</b> ${cashWrongAnswerStr}`;
 
         showCustomAlert(title, gameOverMsg);
 //
