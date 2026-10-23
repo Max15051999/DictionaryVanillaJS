@@ -3,9 +3,16 @@
 var tokenBtn = document.querySelector('.tokenBtn');
 var gistBtn = document.querySelector('.gistBtn');
 
+var localContentBtn = document.querySelector('#local');
+var gistContentBtn = document.querySelector('#gist');
+
 var container = document.querySelector('.container');
 var tokenNotSetContainer = document.querySelector('.token-not-set-container');
 
+if (localStorage.getItem('contentRecourse') === 'gist')
+    gistContentBtn.checked = true;
+else
+    localContentBtn.checked = true;
 
 function setButtonText() {
     var btnText;

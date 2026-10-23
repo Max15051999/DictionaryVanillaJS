@@ -19,7 +19,8 @@ var GOOGLE_API_HEADERS = {
 
 var GIST_TOKEN_NAME = 'gist_token';
 
-var LOCAL_STORAGE_GIST_KEY = 'gist_words';
+var LOCAL_STORAGE_GIST_WORDS_KEY = 'gist_words';
+var LOCAL_STORAGE_GIST_NOTES_KEY = 'gist_notes';
 
 var GAME_WORDS_KEY = 'game_words';
 var IS_GAME_WITH_CARDS = 'is_game_with_cards';

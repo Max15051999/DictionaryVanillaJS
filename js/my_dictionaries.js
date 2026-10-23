@@ -6,12 +6,14 @@ var GISTWords = []
 var uniqueLangs = new Set();
 
 var dictPage = sessionStorage.getItem('dictPage');
+var dictType = sessionStorage.getItem('dictType');
+var contentKey = dictType === 'words' ? LOCAL_STORAGE_GIST_WORDS_KEY : LOCAL_STORAGE_GIST_NOTES_KEY;
 
-if (dictPage === 'home' || dictPage === 'guess') {
+if ((dictPage === 'home' || dictPage === 'guess') && localStorage.getItem('contentRecourse') === 'gist') {
     var gistId = '';
     var fileName = '';
 
-    if (sessionStorage.getItem('dictType') === 'words') {
+    if (dictType === 'words') {
         gistId = WORDS_GIST_ID;
         fileName = WORDS_FILE_NAME;
     } else {
@@ -32,7 +34,7 @@ if (dictPage === 'home' || dictPage === 'guess') {
 
     }
 } else {
-    GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY));
+    GISTWords = JSON.parse(localStorage.getItem(contentKey));
     prepareEnvironment();
 }
 
@@ -43,7 +45,7 @@ function prepareEnvironment() {
 
     setDictionaries();
 
-    localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+    localStorage.setItem(contentKey, JSON.stringify(GISTWords));
 }
 
 function getUniqueLangs() {

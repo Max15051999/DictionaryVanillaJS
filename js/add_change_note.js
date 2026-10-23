@@ -92,7 +92,7 @@ function addChangeNoteToGIST(changedNote) {
 
             GISTNotes = result;
 
-            localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTNotes));
+            localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, JSON.stringify(GISTNotes));
 
             var successMsg = 'Заметка успешно добавлена в GIST';
 
@@ -118,7 +118,7 @@ function addChangeNoteToGIST(changedNote) {
             if (changedNote === null) {
                 GISTNotes.push(note);
             } else {
-                localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTNotes));
+                localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, JSON.stringify(GISTNotes));
 
                 successMsg = 'Заметка успешно изменена';
 
@@ -161,7 +161,7 @@ function addChangeNoteToGIST(changedNote) {
                         body: JSON.stringify(updateData)
                     });
 
-                    localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTNotes));
+                    localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, JSON.stringify(GISTNotes));
 
                     alert('✅ ' + successMsg);
 

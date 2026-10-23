@@ -24,8 +24,10 @@ var dictWords = [];
 var checkedWords = {};
 var checkedWordsCounter = 0;
 
+var contentKey = dictType === 'words' ? LOCAL_STORAGE_GIST_WORDS_KEY : LOCAL_STORAGE_GIST_NOTES_KEY;
+
 try {
-    var dictWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY))
+    var dictWords = JSON.parse(localStorage.getItem(contentKey))
             .filter(GISTWord => GISTWord['language'] === dictLang);
 } catch(error) {
     dictWords = [];
@@ -75,7 +77,7 @@ function divWithWordCardsOnClick(event) {
             }
             case 'deletor': {
                 if (confirm(`Вы действительно хотите удалить ${dictType === 'words' ? 'слово' : 'заметку'} ${setBigFirstLetter(focusedWord[key])} ?`)) {
-                    var GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY)).filter((w) => w[key].toLowerCase() !== focusedWord[key].toLowerCase());
+                    var GISTWords = JSON.parse(localStorage.getItem(contentKey)).filter((w) => w[key].toLowerCase() !== focusedWord[key].toLowerCase());
 
                     var updateData = {
                         files: {
@@ -106,7 +108,7 @@ function divWithWordCardsOnClick(event) {
                                 return;
                             }
 
-                            localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+                            localStorage.setItem(contentKey, JSON.stringify(GISTWords));
 
                             if (dictType === 'words')
                                 alert(`Слово ${setBigFirstLetter(focusedWord[key])} успешно удалено`);
@@ -158,7 +160,7 @@ function setTitle() {
         possibleEnds = ['о', 'а', ''];
     } else {
         wordBase = 'замет';
-        possibleEnds = ['ка', 'ки', 'ток'];
+        possibleEnds = ['ка', 'ки', 'ок'];
     }
 
     document.querySelector('h1').innerText = `${dictName} (${dictWords.length} ${chooseRightEnding(wordBase, possibleEnds, dictWords.length)})`;
@@ -410,7 +412,7 @@ function deleteAllWords() {
             return;
     }
 
-    var GISTWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY));
+    var GISTWords = JSON.parse(localStorage.getItem(contentKey));
     var uniqueOriginals = new Set(deletedWords.map(deletedWord => `${deletedWord['original']}-${deletedWord['language']}`));
     remainWords = GISTWords.filter(GISTWord => !uniqueOriginals.has(`${GISTWord['original']}-${GISTWord['language']}`));
 
@@ -436,7 +438,7 @@ function deleteAllWords() {
                 body: JSON.stringify(updateData)
             });
 
-            localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(remainWords));
+            localStorage.setItem(contentKey, JSON.stringify(remainWords));
 
             if (checkedWordsCounter > 0 && checkedWordsCounter !== dictWords.length) {
 
@@ -534,7 +536,7 @@ function uploadDict() {
                 getUpdatedWordsList().then(result => {
                         GISTWords = result;
 
-                        localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+                        localStorage.setItem(contentKey, JSON.stringify(GISTWords));
 
                         dictWords = GISTWords.filter(GISTWord => GISTWord['language'] === dictLang);
 
@@ -591,7 +593,7 @@ function uploadDict() {
                                         body: JSON.stringify(updateData)
                                     });
 
-                                    localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+                                    localStorage.setItem(contentKey, JSON.stringify(GISTWords));
 
                                     setTitle();
                                     setWords([...dictWords].splice(initLen), initLen, false);

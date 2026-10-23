@@ -142,7 +142,7 @@ function addChangeWordToGIST(changedWord) {
 
             GISTWords = result;
 
-            localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+            localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, JSON.stringify(GISTWords));
 
             var successMsg = 'Слово успешно добавлено в GIST';
 
@@ -169,7 +169,7 @@ function addChangeWordToGIST(changedWord) {
             if (changedWord === null) {
                 GISTWords.push(word);
             } else {
-                localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+                localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, JSON.stringify(GISTWords));
 
                 successMsg = 'Слово успешно изменено';
 
@@ -214,7 +214,7 @@ function addChangeWordToGIST(changedWord) {
                         body: JSON.stringify(updateData)
                     });
 
-                    localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+                    localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, JSON.stringify(GISTWords));
 
                     alert('✅ ' + successMsg);
 

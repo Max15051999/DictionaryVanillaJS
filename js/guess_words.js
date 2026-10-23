@@ -23,7 +23,7 @@ var dictWords = [];
 var gameWords = [];
 
 try {
-    var dictWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_KEY))
+    var dictWords = JSON.parse(localStorage.getItem(LOCAL_STORAGE_GIST_WORDS_KEY))
             .filter(GISTWord => GISTWord['language'] === dictLang);
 } catch(error) {
     dictWords = [];

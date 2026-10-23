@@ -166,7 +166,7 @@ function addToDict() {
 
                 GISTWords = result;
 
-                localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+                localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, JSON.stringify(GISTWords));
 
                 var word = {
                     original: originalText,
@@ -209,7 +209,7 @@ function addToDict() {
                             body: JSON.stringify(updateData)
                         });
 
-                        localStorage.setItem(LOCAL_STORAGE_GIST_KEY, JSON.stringify(GISTWords));
+                        localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, JSON.stringify(GISTWords));
 
                         alert('✅ Слово успешно добавлено в GIST');
                     } catch(error) {

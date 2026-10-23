@@ -27,6 +27,12 @@
     <div class="container">
         <h1>Dictionary</h1>
 
+        <h3>Брать слова и заметки с</h3>
+        <input id="local" type="radio" value="local" name="contentResource" onclick="localStorage.setItem('contentRecourse', 'local');">
+        <label for="local">LocalStorage</label>
+        <input id="gist" type="radio" value="gist" name="contentResource" onclick="localStorage.setItem('contentRecourse', 'gist');">
+        <label for="gist">GIST</label>
+
         <hr><br><br><br>
 
         <a href="translator.html"><button>Переводчик</button></a><br><br>

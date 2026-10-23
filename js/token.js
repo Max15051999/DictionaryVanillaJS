@@ -19,9 +19,9 @@ function getUpdatedList(gistId, fromFile) {
 
 async function saveFileContent(content) {
     try {
-        localStorage.setItem(LOCAL_STORAGE_GIST_KEY, content);
+        localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, content);
         alert('Данные с GIST успешно обновлены');
-        // console.log(localStorage.getItem(LOCAL_STORAGE_GIST_KEY));
+        // console.log(localStorage.getItem(LOCAL_STORAGE_GIST_WORDS_KEY));
     } catch(error) {
         alert(`Ошибка обновления данных: ${error}`);
     }
