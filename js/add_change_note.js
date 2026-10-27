@@ -5,6 +5,7 @@ var langsSelector = document.querySelector('#langs-selector');
 var noteNameInput = document.querySelector('#note-input');
 var noteContentTextarea = document.querySelector('#note-content');
 var addChangeNoteBtn = document.querySelector('#add-change-note-btn');
+var backBtn = document.querySelector('#back-btn');
 
 var previousUrl = sessionStorage.getItem('prevPage');
 
@@ -33,6 +34,8 @@ function setTitle() {
     document.querySelector('h1').innerText = title;
 
     addChangeNoteBtn.innerText = title;
+
+    backBtn.href = previousUrl === 'home' ? 'index.html' : 'dictionary.html';
 }
 
 function setLangs() {
@@ -92,13 +95,14 @@ function addChangeNoteToGIST(changedNote) {
 
             GISTNotes = result;
 
-            localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, JSON.stringify(GISTNotes));
+            localStorage.setItem(LOCAL_STORAGE_GIST_NOTES_KEY, JSON.stringify(GISTNotes));
 
             var successMsg = 'Заметка успешно добавлена в GIST';
 
             if (changedNote === null) {
                 for (var GISTNote of GISTNotes) {
-                    if (GISTNote['name'].toLowerCase() === noteName.toLowerCase()) {
+                    if ((GISTNote['name'].toLowerCase() === noteName.toLowerCase()) &&
+                            GISTNotes['language'] === lang) {
                         alert('Данная заметка уже содержится в словаре');
                         addChangeNoteBtn.disabled = false;
                         return;
@@ -118,11 +122,12 @@ function addChangeNoteToGIST(changedNote) {
             if (changedNote === null) {
                 GISTNotes.push(note);
             } else {
-                localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, JSON.stringify(GISTNotes));
+                localStorage.setItem(LOCAL_STORAGE_GIST_NOTES_KEY, JSON.stringify(GISTNotes));
 
                 successMsg = 'Заметка успешно изменена';
 
-                var idx = GISTNotes.findIndex(el => el['name'].toLowerCase() === changedNote['name'].toLowerCase());
+                var idx = GISTNotes.findIndex(el => el['name'].toLowerCase() === changedNote['name'].toLowerCase() &&
+                                                el['language'] === changedNote['language']);
 
                 if (idx !== -1) {
                     GISTNotes[idx] = note;
@@ -161,7 +166,7 @@ function addChangeNoteToGIST(changedNote) {
                         body: JSON.stringify(updateData)
                     });
 
-                    localStorage.setItem(LOCAL_STORAGE_GIST_WORDS_KEY, JSON.stringify(GISTNotes));
+                    localStorage.setItem(LOCAL_STORAGE_GIST_NOTES_KEY, JSON.stringify(GISTNotes));
 
                     alert('✅ ' + successMsg);
 

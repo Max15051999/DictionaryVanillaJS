@@ -148,7 +148,8 @@ function addChangeWordToGIST(changedWord) {
 
             if (changedWord === null) {
                 for (var GISTWord of GISTWords) {
-                    if (GISTWord['original'].toLowerCase() === originalWord.toLowerCase()) {
+                    if ((GISTWord['original'].toLowerCase() === originalWord.toLowerCase()) &&
+                            GISTWord['language'] === lang) {
                         alert('Данное слово уже содержится в словаре');
                         addChangeWordBtn.disabled = false;
                         return;
@@ -175,7 +176,8 @@ function addChangeWordToGIST(changedWord) {
 
                 // changedWord = word;
 
-                var idx = GISTWords.findIndex(el => el['original'].toLowerCase() === changedWord['original'].toLowerCase());
+                var idx = GISTWords.findIndex(el => el['original'].toLowerCase() === changedWord['original'].toLowerCase() &&
+                                                el['language'] === changedWord['language']);
 
                 if (idx !== -1) {
                     GISTWords[idx] = word;
