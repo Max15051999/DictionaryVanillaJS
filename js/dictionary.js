@@ -72,7 +72,7 @@ function divWithWordCardsOnClick(event) {
             }
             case 'deletor': {
                 if (confirm(`Вы действительно хотите удалить ${dictType === 'words' ? 'слово' : 'заметку'} ${setBigFirstLetter(focusedWord[key])} ?`)) {
-                    var GISTWords = JSON.parse(localStorage.getItem(contentKey)).filter((w) => w[key].toLowerCase() !== focusedWord[key].toLowerCase() &&
+                    var GISTWords = JSON.parse(localStorage.getItem(contentKey)).filter((w) => w[key].toLowerCase() !== focusedWord[key].toLowerCase() ||
                                                                                             w['language'] !== focusedWord['language']);
 
                     var updateData = {
