@@ -6,8 +6,6 @@ var symbolsDiv = document.querySelector('#symbols-div');
 var searchInput = document.querySelector('#search-input');
 var container = document.querySelector('.container');
 
-var addNoteBtn = document.querySelector('#add-note-btn');
-
 var divWithWordCards = document.createElement('div');
 divWithWordCards.id = 'main-div-with-words';
 divWithWordCards.onclick = () => divWithWordCardsOnClick(event);
@@ -16,9 +14,6 @@ container.appendChild(divWithWordCards);
 
 var dictLang = sessionStorage.getItem(DICT_LANG_KEY);
 var dictType = sessionStorage.getItem('dictType');
-
-if (dictType === 'words')
-    addNoteBtn.style.display = 'none';
 
 var dictWords = [];
 var checkedWords = {};
