@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var uploadDictBtn = document.querySelector('#upload-dict-btn');
 var fileInput = document.querySelector('#file-input');

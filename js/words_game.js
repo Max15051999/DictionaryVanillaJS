@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var dictLang = sessionStorage.getItem(DICT_LANG_KEY);
 

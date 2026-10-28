@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var container = document.querySelector('.container');
 var langsSelector = document.querySelector('#langs-selector');

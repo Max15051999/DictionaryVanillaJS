@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var modalTitle = document.querySelector('#modalTitle');
 var gameOverMsgParagraph = document.querySelector('#game-over-msg');

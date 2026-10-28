@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var tokenBtn = document.querySelector('.tokenBtn');
 var gistBtn = document.querySelector('.gistBtn');

@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var fromLangsSelector = document.querySelector('#from-langs-selector');
 var toLangsSelector = document.querySelector('#to-langs-selector');

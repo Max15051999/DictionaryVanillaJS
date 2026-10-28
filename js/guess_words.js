@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var totalWordsInput = document.querySelector('#total-words-input');
 var takeFromEndCheckbox = document.querySelector('#take-from-end-checkbox');
