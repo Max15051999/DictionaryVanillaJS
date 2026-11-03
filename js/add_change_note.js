@@ -177,14 +177,12 @@ function addChangeNoteToGIST(changedNote) {
                     }
                 } catch(error) {
                     alert('❌ Error updating GIST:', error.message);
-                    console.log(error)
                     addChangeNoteBtn.disabled = false;
                 }
             })();
         });
     } catch (error) {
         alert('❌ Error updating GIST:', error.message);
-        console.log(error)
         addChangeNoteBtn.disabled = false;
     }
 }

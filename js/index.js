@@ -41,8 +41,6 @@ function setButtonText() {
         } else {
             alert(badToken);
         }
-
-        // console.log(localStorage.getItem(GIST_TOKEN_NAME));
     };
 
     if (localStorage.getItem(GIST_TOKEN_NAME) !== null) {

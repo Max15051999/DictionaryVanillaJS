@@ -151,8 +151,6 @@ function setWordInfo() {
                 if (parts.length > 1) {
                     var firstWord = parts[0].toLowerCase();
 
-                    console.log(parts)
-
                     try {
                         color = gendersColorsWords[dictLang.replace(/ом$/, 'ий')][firstWord];
                     } catch(error) {
@@ -179,7 +177,6 @@ function setWordInfo() {
             setCardsVariants();
 
     } else {
-        console.log(wrongAnswerWords);
 
         if (cashWrongAnswerWords.length === 0 && wrongAnswerCounter > 0)
             cashWrongAnswerWords = [...wrongAnswerWords];

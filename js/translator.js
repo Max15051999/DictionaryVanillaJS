@@ -214,7 +214,6 @@ function addToDict() {
                         alert('✅ Слово успешно добавлено в GIST');
                     } catch(error) {
                         alert('❌ Error updating GIST:', error.message);
-                        console.log(error)
                     }
                 })();
 

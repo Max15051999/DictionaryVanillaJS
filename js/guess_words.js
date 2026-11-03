@@ -102,8 +102,6 @@ function startGame(isDictation) {
 
             for (var i = 0; i < total - len; i++)
                 gameWords.push(dictWords[i]);
-
-            console.log(gameWords)
         } else {
             while (total !== len)
                 gameWords.splice(--len)
