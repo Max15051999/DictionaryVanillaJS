@@ -264,6 +264,9 @@ function checkTranslateWord() {
             else
                 rightAnswerCounter++;
 
+            if (wordOriginalKey === 'translate')
+                sayWord(translate, dictLang === 'Английском' ? 'en' : langCodeMap[dictLang.replace(/ом$/, 'ий')]);
+
             setTimeout(() => {
                 questionStatusImg.src = 'img/thinking_icon.png';
                 rightAnswerLabel.innerText = '';
