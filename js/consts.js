@@ -41,6 +41,14 @@ var langCodeMap = {
     'Немецкий' : 'de'
 }
 
+var gendersColorsWords = {
+    'Немецкий': {
+                    'die': 'Red',
+                    'der': 'Blue',
+                    'das': 'Black'
+                }
+}
+
 var GOOGLE_API_KEY = 'AKfycbzYOnhBQib2cIaOM8XpNrn8g9EzsO8EGyB54rWGfI6kkE14DH7aEB2Ll_abEkMxwdOg';
 var GOOGLE_API = (word, target, source) => 'https://' + `script.google.com/macros/s/${GOOGLE_API_KEY}/exec?q=${word}&target=${target}&source=${source}`;
 

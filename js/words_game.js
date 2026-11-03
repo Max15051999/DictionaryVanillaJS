@@ -142,6 +142,29 @@ function setWordInfo() {
 
         if (!isDictation) {
             originalWordLabel.innerText = currentWord[wordOriginalKey];
+
+            if (wordOriginalKey === 'translate' && !withCards) {
+                var parts = currentWord['original'].split(' ');
+
+                var color = '';
+
+                if (parts.length > 1) {
+                    var firstWord = parts[0].toLowerCase();
+
+                    console.log(parts)
+
+                    try {
+                        color = gendersColorsWords[dictLang.replace(/ом$/, 'ий')][firstWord];
+                    } catch(error) {
+                        color = 'SaddleBrown';
+                    }
+                } else {
+                    color = 'SaddleBrown';
+                }
+
+                originalWordLabel.style.color = color;
+            }
+
             transcriptionWordLabel.innerText = wordOriginalKey === 'original' ? currentWord['transcription'] : '';
         }
 
