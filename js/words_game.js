@@ -6,10 +6,12 @@ var gameWords = [];
 var gameWordIndex = 0;
 var withCards = localStorage.getItem(IS_GAME_WITH_CARDS) === '1';
 var isDictation = localStorage.getItem(IS_DICTATION_WORDS) === '1';
+var isWrongVerbs = localStorage.getItem(IS_WRONG_VERBS) === '1';
 
 var totalWordsLabel = document.querySelector('#total-words-label');
 
 var wordCards = document.querySelectorAll('.word-card');
+var wrongVerbInputs = document.querySelectorAll('.input-verb');
 
 var wordOriginalKey = localStorage.getItem(PRIMARY_GAME_LANG) === 'foreign' ? 'original' : 'translate';
 var wordTranslateKey = wordOriginalKey === 'original' ? 'translate' : 'original';
@@ -26,14 +28,30 @@ var translateWordInput = document.querySelector('#translate-input-word');
 
 var wordChooseInput = document.querySelector('.word-choose-input');
 var wordChooseCards = document.querySelector('.word-choose-cards');
+var wordChooseVerbs = document.querySelector('.word-choose-verbs');
 
 var symbolsDiv = document.querySelector('#symbols-div');
 
 try {
-    gameWords = JSON.parse(localStorage.getItem(GAME_WORDS_KEY));
+    gameWords = JSON.parse(localStorage.getItem(isWrongVerbs ? GAME_VERBS_KEY : GAME_WORDS_KEY));
 } catch(error) {
     gameWords = [];
 }
+
+var clickedInputIndex = 0;
+
+if (isWrongVerbs) {
+
+    for (var i = 0; i < 3; i++)
+        wrongVerbInputs[i].placeholder = gameWords[0][i].trim();
+
+    gameWords.splice(0, 1);
+
+    document.querySelector('#auto-voice-div').style.display = 'none';
+    document.querySelector('#voice-div').style.display = 'none';
+}
+
+gameWords = shuffle(gameWords);
 
 var currentWord = null;
 
@@ -72,6 +90,8 @@ function setTitle() {
     var title = '';
     if (isDictation)
         title = `Под диктовку на ${dictLang}`;
+    else if (isWrongVerbs)
+        title = `Неправильные глаголы на ${dictLang}`;
     else
         title = `Угадай слова на ${dictLang}`;
 
@@ -80,8 +100,9 @@ function setTitle() {
 
     if (withCards) {
         wordChooseCards.style.display = 'block';
-
         setCardsVariants();
+    } else if (isWrongVerbs) {
+        wordChooseVerbs.style.display = 'block';
     } else {
         wordChooseInput.style.display = 'block';
     }
@@ -127,7 +148,7 @@ function readWordCardText(card) {
 function showHideSpecialSymbols(lang) {
     var visibility = '';
 
-    if (lang !== 'Немецком' || withCards || wordOriginalKey === 'original' && !isDictation)
+    if (lang !== 'Немецком' || withCards || wordOriginalKey === 'original' && !isDictation && !isWrongVerbs)
         visibility = 'hidden';
     else
         visibility = 'visible';
@@ -140,7 +161,14 @@ function setWordInfo() {
     if (gameWordIndex < totalWords) {
         currentWord = gameWords[gameWordIndex];
 
-        if (!isDictation) {
+        if (isWrongVerbs) {
+            originalWordLabel.innerText = currentWord[3];
+
+            for (var wrongVerbInput of wrongVerbInputs) {
+                wrongVerbInput.value = '';
+                wrongVerbInput.style.background = 'white';
+            }
+        } else if (!isDictation) {
             originalWordLabel.innerText = currentWord[wordOriginalKey];
 
             if (wordOriginalKey === 'translate' && !withCards) {
@@ -168,7 +196,7 @@ function setWordInfo() {
 
         translateWordInput.focus();
 
-        if (sayWordsAutomaticallyCheckbox.checked || isDictation)
+        if (!isWrongVerbs && (sayWordsAutomaticallyCheckbox.checked || isDictation))
             prepareToSayWord(currentWord[wordOriginalKey], dictLang);
 
         totalWordsLabel.innerText = `${gameWordIndex + 1}/${totalWords}`;
@@ -181,7 +209,7 @@ function setWordInfo() {
         if (cashWrongAnswerWords.length === 0 && wrongAnswerCounter > 0)
             cashWrongAnswerWords = [...wrongAnswerWords];
 
-        var title = `Игра в слова на ${dictLang} окончена`;
+        var title = `Игра в ${isWrongVerbs ? 'неправильные глаголы' : 'слова'} на ${dictLang} окончена`;
 
         var wrongAnswerStr = wrongAnswerCounter > 0 ?
                                                     `<a href="#" style='color: red;' onclick='confirmModal(true);'>Неправильных ответов: ${wrongAnswerCounter}</a>` :
@@ -191,7 +219,7 @@ function setWordInfo() {
                                                                     '';
 
         var gameOverMsg = `
-                    <b>Игра в слова окончена. Ваш результат:</b><br>
+                    <b>Игра в ${isWrongVerbs ? 'неправильные глаголы' : 'слова'} окончена. Ваш результат:</b><br>
                     <b>Всего вопросов: ${totalWords}</b><br>
                     <b>Правильных ответов: ${rightAnswerCounter}</b><br>
                     ${wrongAnswerStr}<br>
@@ -219,7 +247,7 @@ function prepareToSayWord(word, lang, rate=1) {
     if (isDictation)
         word = currentWord[wordOriginalKey];
 
-    if (word === '')
+    if (isWrongVerbs || word === '')
         return;
 
     if (wordOriginalKey === 'translate') {
@@ -250,66 +278,104 @@ function prepareToSayWord(word, lang, rate=1) {
 }
 
 function checkTranslateWord() {
-    var translate = translateWordInput.value.toLowerCase().trim();
+    var isAnswerRight = false;
+    var wrongVerbsHint = '';
 
-    if (translate !== '') {
-        var imgSrc = '';
-        var rightAnswer = currentWord[wordTranslateKey];
+    if (!isWrongVerbs) {
+        var translate = translateWordInput.value.toLowerCase().trim();
 
-        translate = replaceSpecialSyms(translate);
+        if (translate !== '') {
+            var imgSrc = '';
+            var rightAnswer = currentWord[wordTranslateKey];
 
-        var isAnswerRight = false;
+            translate = replaceSpecialSyms(translate);
 
-        var wordVariants = rightAnswer.split(',');
+            var wordVariants = rightAnswer.split(',');
 
-        if (wordVariants.length > 1 && !withCards && !isDictation) {
+            if (wordVariants.length > 1 && !withCards && !isDictation) {
 
-            wordVariants.forEach(word => {
-                if (replaceSpecialSyms(word.toLocaleLowerCase().trim()) === translate) {
-                    isAnswerRight = true;
-                    return;
-                }
-            });
-        } else if (isDictation && wordOriginalKey !== 'translate') {
-            isAnswerRight = translate === replaceSpecialSyms(currentWord[wordOriginalKey].toLocaleLowerCase());
-        } else {
-            isAnswerRight = translate === replaceSpecialSyms(rightAnswer.toLocaleLowerCase());
-        }
-
-        if (isAnswerRight) {
-            imgSrc = 'img/right_answer_icon.png';
-
-            if (hasIncrementWrong)
-                hasIncrementWrong = false;
-            else
-                rightAnswerCounter++;
-
-            if (wordOriginalKey === 'translate')
-                sayWord(translate, dictLang === 'Английском' ? 'en' : langCodeMap[dictLang.replace(/ом$/, 'ий')]);
-
-            setTimeout(() => {
-                questionStatusImg.src = 'img/thinking_icon.png';
-                rightAnswerLabel.innerText = '';
-
-                gameWordIndex++;
-                setWordInfo();
-            }, 1000);
-        } else {
-            imgSrc = 'img/wrong_answer_icon.png';
-
-            if (!hasIncrementWrong) {
-                wrongAnswerCounter++;
-                hasIncrementWrong = true;
-                wrongAnswerWords.push(currentWord);
+                wordVariants.forEach(word => {
+                    if (replaceSpecialSyms(word.toLocaleLowerCase().trim()) === translate) {
+                        isAnswerRight = true;
+                        return;
+                    }
+                });
+            } else if (isDictation && wordOriginalKey !== 'translate') {
+                isAnswerRight = translate === replaceSpecialSyms(currentWord[wordOriginalKey].toLocaleLowerCase());
+            } else {
+                isAnswerRight = translate === replaceSpecialSyms(rightAnswer.toLocaleLowerCase());
             }
+        } else {
+            alert('Введите перевод слова');
+            return;
+        }
+    } else {
+        isAnswerRight = true;
+
+        for (var i = 0; i < 3; i++) {
+            var input = wrongVerbInputs[i];
+            var answer = input.value.toLowerCase().trim();
+
+            if (answer === '') {
+                alert('Заполните все поля');
+
+                for (var wrongVerbInput of wrongVerbInputs)
+                    wrongVerbInput.style.background = 'white';
+
+                return;
+            }
+
+            var bgColor = '';
+            if (answer !== currentWord[i].toLowerCase().trim()) {
+                bgColor = 'red';
+                wrongVerbsHint += currentWord[i] + ' - ';
+                isAnswerRight = false;
+            } else {
+                bgColor = 'green';
+            }
+
+            input.style.background = bgColor;
         }
 
-        questionStatusImg.src = imgSrc;
-        rightAnswerLabel.innerText = isDictation && wordOriginalKey !== 'translate' ? `${currentWord[wordOriginalKey]} (${rightAnswer})` : rightAnswer;
-        translateWordInput.value = '';
-    } else {
-        alert('Введите перевод слова');
+        wrongVerbsHint = wrongVerbsHint.replace(/- $/, '');
     }
+
+    if (isAnswerRight) {
+        imgSrc = 'img/right_answer_icon.png';
+
+        if (hasIncrementWrong)
+            hasIncrementWrong = false;
+        else
+            rightAnswerCounter++;
+
+        if (!isWrongVerbs && wordOriginalKey === 'translate')
+            sayWord(translate, dictLang === 'Английском' ? 'en' : langCodeMap[dictLang.replace(/ом$/, 'ий')]);
+
+        setTimeout(() => {
+            questionStatusImg.src = 'img/thinking_icon.png';
+            rightAnswerLabel.innerText = '';
+
+            gameWordIndex++;
+            setWordInfo();
+        }, 1000);
+    } else {
+        imgSrc = 'img/wrong_answer_icon.png';
+
+        if (!hasIncrementWrong) {
+            wrongAnswerCounter++;
+            hasIncrementWrong = true;
+            wrongAnswerWords.push(currentWord);
+        }
+    }
+
+    questionStatusImg.src = imgSrc;
+
+    if (!isWrongVerbs)
+        rightAnswerLabel.innerText = isDictation && wordOriginalKey !== 'translate' ? `${currentWord[wordOriginalKey]} (${rightAnswer})` : rightAnswer;
+    else
+        rightAnswerLabel.innerText = wrongVerbsHint;
+
+    translateWordInput.value = '';
 }
 
 function sayWord(word, lang, rate=1) {
@@ -326,7 +392,10 @@ function sayWord(word, lang, rate=1) {
 }
 
 function addSpecialSymbolToInput(symbol) {
-    translateWordInput.value += symbol;
+    if (!isWrongVerbs)
+        translateWordInput.value += symbol;
+    else
+        wrongVerbInputs[clickedInputIndex].value += symbol;
 }
 
 

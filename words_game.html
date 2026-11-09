@@ -43,8 +43,12 @@
 
         <select id="accents-selector" style="visibility: hidden;"></select>
         <br><br>
-        <input type="checkbox" id="say_words_automatically_checkbox" onclick="if (this.checked) prepareToSayWord(String(document.getElementById('original-word').innerText), dictLang);">
-        <label for="say_words_automatically_checkbox">Произносить автоматически</label><br><br><br><br>
+
+        <div id="auto-voice-div">
+            <input type="checkbox" id="say_words_automatically_checkbox" onclick="if (this.checked) prepareToSayWord(String(document.getElementById('original-word').innerText), dictLang);">
+            <label for="say_words_automatically_checkbox">Произносить автоматически</label>
+        </div>
+        <br><br><br><br>
 
         <div id="voice-div">
             <label style="font-size: 150%;">1X</label>
@@ -69,6 +73,12 @@
                 <div class="word-card" onclick="readWordCardText(this);" data-idx="2">...</div><br>
                 <div class="word-card" onclick="readWordCardText(this);" data-idx="3">...</div><br>
                 <br><br>
+            </div>
+
+            <div class="word-choose-verbs" style="display: none">
+                <input class="input-verb" type="text" onclick="clickedInputIndex = 0;"><br><br>
+                <input class="input-verb" type="text" onclick="clickedInputIndex = 1;"><br><br>
+                <input class="input-verb" type="text" onclick="clickedInputIndex = 2;"><br><br>
             </div>
 
             <button id="check-answer" onclick="checkTranslateWord();">Готово</button>

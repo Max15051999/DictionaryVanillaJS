@@ -28,36 +28,39 @@ function closeModal() {
 }
 
 function confirmModal(withWrong = false, withCashWrong = false) {
+
     gameWordIndex = 0;
     rightAnswerCounter = 0;
     wrongAnswerCounter = 0;
     modalOverlay.classList.remove('active');
 
-    var key = '';
+    if (!isWrongVerbs) {
+        var key = '';
 
-    if (foreignRusBtn.checked)
-        key = 'original';
-    else
-        key = 'translate';
+        if (foreignRusBtn.checked)
+            key = 'original';
+        else
+            key = 'translate';
 
-    wordOriginalKey = key;
-    wordTranslateKey = wordOriginalKey === 'original' ? 'translate' : 'original';
+        wordOriginalKey = key;
+        wordTranslateKey = wordOriginalKey === 'original' ? 'translate' : 'original';
 
-    if ((dictLang === 'Английский' || dictLang === 'Английском') && wordOriginalKey === 'original')
-        accentsSelector.style.visibility = 'visible';
-    else
-        accentsSelector.style.visibility = 'hidden';
+        if ((dictLang === 'Английский' || dictLang === 'Английском') && wordOriginalKey === 'original')
+            accentsSelector.style.visibility = 'visible';
+        else
+            accentsSelector.style.visibility = 'hidden';
 
-    withCards = wordCardsBtn.checked;
+        withCards = wordCardsBtn.checked;
 
-    wordChooseInput.style.display = withCards ? 'none' : 'block';
-    wordChooseCards.style.display = withCards ? 'block' : 'none';
+        wordChooseInput.style.display = withCards ? 'none' : 'block';
+        wordChooseCards.style.display = withCards ? 'block' : 'none';
+    }
 
     if (withCashWrong) {
         gameWords = cashWrongAnswerWords;
     } else if (!withWrong) {
         try {
-            gameWords = JSON.parse(localStorage.getItem(GAME_WORDS_KEY));
+            gameWords = JSON.parse(localStorage.getItem(!isWrongVerbs ? GAME_WORDS_KEY : GAME_VERBS_KEY));
         } catch(error) {
             alert('Нет слов для игры');
             gameWords = wrongAnswerWords;
@@ -71,7 +74,7 @@ function confirmModal(withWrong = false, withCashWrong = false) {
     gameWords = shuffle(gameWords);
     totalWords = gameWords.length;
 
-    if (withCards && totalWords < 4) {
+    if (!isWrongVerbs && withCards && totalWords < 4) {
         withCards = false;
 
         wordChooseInput.style.display = 'block';
@@ -79,7 +82,6 @@ function confirmModal(withWrong = false, withCashWrong = false) {
     }
 
     showHideSpecialSymbols(dictLang);
-    // fillAccents();
     setWordInfo();
 }
 
@@ -104,3 +106,8 @@ else
 
 if (totalWords < 4)
     wordCardsBtn.disabled = true;
+
+if (isWrongVerbs) {
+    for (var settingDiv of document.querySelectorAll('.settings'))
+        settingDiv.style.display = 'none';
+}

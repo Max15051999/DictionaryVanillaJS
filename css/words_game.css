@@ -25,6 +25,11 @@
     font-size: 25px;
 }
 
+.input-verb {
+    width: 80%;
+    font-size: 25px;
+}
+
 #question-status {
     width: 10%;
     height: 10%;
