@@ -138,6 +138,9 @@ function startGame(isDictation, isWrongVerbs = false) {
                 }
 
                 localStorage.setItem(GAME_VERBS_KEY, JSON.stringify(wrongVerbs));
+                localStorage.setItem(IS_DICTATION_WORDS, '0');
+                localStorage.setItem(IS_GAME_WITH_CARDS, '0');
+
                 window.location.href = 'words_game.html';
             } catch(error) {
                 alert(`Не удалось распарсить содержание заметки с неправильными глаголами. У заметки должна быть следующая структура:
