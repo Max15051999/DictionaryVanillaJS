@@ -66,7 +66,7 @@ var cashWrongAnswerWords = [];
 
 function fillAccents() {
 
-    if ((dictLang === 'Английский' || dictLang === 'Английском') && wordOriginalKey === 'original') {
+    if ((dictLang === 'Английский' || dictLang === 'Английском') && (wordOriginalKey === 'original' || isWrongVerbs)) {
         accentsSelector.style.visibility = 'visible';
 
         for (var lang in langCodeMap) {
