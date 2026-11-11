@@ -352,6 +352,7 @@ function checkTranslateWord() {
                 prepareToSayWord('', dictLang);
                 clickedInputIndex++;
             }
+            clickedInputIndex = 0;
         }
 
         if (hasIncrementWrong)
