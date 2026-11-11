@@ -47,8 +47,8 @@ if (isWrongVerbs) {
     for (var i = 0; i < 3; i++)
         wrongVerbInputs[i].placeholder = columns[i].trim();
 
-    document.querySelector('#auto-voice-div').style.display = 'none';
-    document.querySelector('#voice-div').style.display = 'none';
+    // document.querySelector('#auto-voice-div').style.display = 'none';
+    // document.querySelector('#voice-div').style.display = 'none';
 }
 
 gameWords = shuffle(gameWords);
@@ -247,10 +247,13 @@ function prepareToSayWord(word, lang, rate=1) {
     if (isDictation)
         word = currentWord[wordOriginalKey];
 
-    if (isWrongVerbs || word === '')
+    if (isWrongVerbs)
+        word = wrongVerbInputs[clickedInputIndex].value.trim();
+
+    if (word === '')
         return;
 
-    if (wordOriginalKey === 'translate') {
+    if (!isWrongVerbs && wordOriginalKey === 'translate') {
         sayWord(word, 'ru', rate);
         return;
     }
@@ -342,6 +345,14 @@ function checkTranslateWord() {
 
     if (isAnswerRight) {
         imgSrc = 'img/right_answer_icon.png';
+
+        if (isWrongVerbs && sayWordsAutomaticallyCheckbox.checked) {
+            clickedInputIndex = 0;
+            for (var i = 0; i < wrongVerbInputs.length; i++) {
+                prepareToSayWord('', dictLang);
+                clickedInputIndex++;
+            }
+        }
 
         if (hasIncrementWrong)
             hasIncrementWrong = false;
