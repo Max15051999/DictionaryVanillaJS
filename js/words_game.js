@@ -314,7 +314,7 @@ function checkTranslateWord() {
 
         for (var i = 0; i < 3; i++) {
             var input = wrongVerbInputs[i];
-            var answer = input.value.toLowerCase().trim();
+            var answer = replaceSpecialSyms(input.value.toLowerCase().trim());
 
             if (answer === '') {
                 alert('Заполните все поля');
@@ -326,7 +326,7 @@ function checkTranslateWord() {
             }
 
             var bgColor = '';
-            if (answer !== currentWord[i].toLowerCase().trim()) {
+            if (answer !== replaceSpecialSyms(currentWord[i].toLowerCase().trim())) {
                 bgColor = 'red';
                 wrongVerbsHint += currentWord[i] + ' - ';
                 isAnswerRight = false;
