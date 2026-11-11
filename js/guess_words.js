@@ -137,6 +137,9 @@ function startGame(isDictation, isWrongVerbs = false) {
                     wrongVerbs.push(cols);
                 }
 
+                localStorage.setItem(GAME_VERBS_COLUMNS_KEY, JSON.stringify(wrongVerbs[0]));
+                wrongVerbs.splice(0, 1);
+
                 localStorage.setItem(GAME_VERBS_KEY, JSON.stringify(wrongVerbs));
                 localStorage.setItem(IS_DICTATION_WORDS, '0');
                 localStorage.setItem(IS_GAME_WITH_CARDS, '0');

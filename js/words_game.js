@@ -42,10 +42,10 @@ var clickedInputIndex = 0;
 
 if (isWrongVerbs) {
 
-    for (var i = 0; i < 3; i++)
-        wrongVerbInputs[i].placeholder = gameWords[0][i].trim();
+    var columns = JSON.parse(localStorage.getItem(GAME_VERBS_COLUMNS_KEY));
 
-    gameWords.splice(0, 1);
+    for (var i = 0; i < 3; i++)
+        wrongVerbInputs[i].placeholder = columns[i].trim();
 
     document.querySelector('#auto-voice-div').style.display = 'none';
     document.querySelector('#voice-div').style.display = 'none';

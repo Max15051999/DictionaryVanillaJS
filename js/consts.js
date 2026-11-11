@@ -24,6 +24,7 @@ var LOCAL_STORAGE_GIST_NOTES_KEY = 'gist_notes';
 
 var GAME_WORDS_KEY = 'game_words';
 var GAME_VERBS_KEY = 'game_verbs';
+var GAME_VERBS_COLUMNS_KEY = 'game_verbs_columns';
 var IS_GAME_WITH_CARDS = 'is_game_with_cards';
 var PRIMARY_GAME_LANG = 'primary_game_lang';
 var IS_DICTATION_WORDS = 'is_dictation_words';
