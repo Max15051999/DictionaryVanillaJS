@@ -44,12 +44,12 @@
 
         <br><br>
 
-        <input class="input" id="note-input" placeholder="Введите название..."><label class="label" onclick="clearInputField('name')">X</label>
+        <input class="input" id="note-input" placeholder="Введите название..." onclick="clickedInputIndex = 0;"><label class="label" onclick="clearInputField('name');">X</label>
 
         <br><br><br>
 
         <label class="label" for="note-content">Содержание заметки*</label><br><br>
-        <textarea id="note-content" placeholder="Введите текст..."></textarea><label class="label" onclick="clearInputField('content')">X</label>
+        <textarea id="note-content" placeholder="Введите текст..." onclick="clickedInputIndex = 1;"></textarea><label class="label" onclick="clearInputField('content')">X</label>
         <br><br><br>
         <button id="add-change-note-btn" onclick="addChangeNoteToGIST(null);"></button>
 

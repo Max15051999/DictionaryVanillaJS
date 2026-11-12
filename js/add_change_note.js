@@ -13,6 +13,8 @@ var symbolsDiv = document.querySelector('#symbols-div');
 
 var GISTNotes = [];
 
+var clickedInputIndex = 0;
+
 function setTitle() {
 
     var title = '';
@@ -210,6 +212,17 @@ function setNote(note) {
 
     addChangeNoteBtn.disabled = true;
 }
+
+function addSpecialSymbolToInput(specialSymbol) {
+    var input = noteNameInput;
+
+    if (clickedInputIndex === 1)
+        input = noteContentTextarea;
+
+    input.value += specialSymbol;
+    input.dispatchEvent(new Event('change'));
+}
+
 
 function clearInputField(inputType) {
 
