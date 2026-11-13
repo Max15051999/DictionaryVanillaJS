@@ -2,7 +2,7 @@
 
 var uploadDictBtn = document.querySelector('#upload-dict-btn');
 var fileInput = document.querySelector('#file-input');
-var symbolsDiv = document.querySelector('#symbols-div');
+var symbolsDivs = document.querySelectorAll('.special-syms');
 var searchInput = document.querySelector('#search-input');
 var container = document.querySelector('.container');
 var selectorItemsDiv = document.querySelector('#selector-items-div');
@@ -33,9 +33,6 @@ if (dictWords.length < 2)
     selectorItemsDiv.style.display = 'none';
 
 function selectItems() {
-    // checkedWords[focusedWord['original']] = {'word': focusedWord, 'card': parentElement};
-    // checkedWordsCounter++;
-
     checkedWordsCounter = 0;
     for (var dictWord of dictWords) {
         var card = divWithWordCards.children[checkedWordsCounter++];
@@ -186,8 +183,16 @@ function setTitle() {
 
     document.querySelector('h1').innerText = `${dictName} (${dictWords.length} ${chooseRightEnding(wordBase, possibleEnds, dictWords.length)})`;
 
-    if (dictLang !== 'Немецкий')
-        symbolsDiv.style.display = 'none';
+    if (dictLang !== 'Английский') {
+        var currentLangCode = langCodeMap[dictLang];
+
+        for (var symbolsDiv of symbolsDivs) {
+            if (symbolsDiv.id === currentLangCode) {
+                symbolsDiv.style.display = 'flex';
+                break;
+            }
+        }
+    }
 }
 
 function setWords(words, startWordIndex, isExist) {

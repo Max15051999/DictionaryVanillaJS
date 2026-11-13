@@ -41,7 +41,8 @@ var setBigFirstLetter = (word) => word.split(' ').map((w) => w.charAt(0).toUpper
 var langCodeMap = {
     'Английский (GB)' : 'en-GB',
     'Английский (US)' : 'en-US',
-    'Немецкий' : 'de'
+    'Немецкий' : 'de',
+    'Украинский': 'uk'
 }
 
 var gendersColorsWords = {
