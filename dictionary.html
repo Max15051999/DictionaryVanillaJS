@@ -14,7 +14,7 @@
     <div class="header">
         <input id="white" type="radio" value="white" name="theme" onclick="changeTheme('white');">
         <label for="white">Светлая</label>
-        <input id="black" type="radio" value="black" name="theme" onclick="changeTheme('black');" checked>
+        <input id="black" type="radio" value="black" name="theme" onclick="changeTheme('black');">
         <label for="black">Тёмная</label><br>
         <a style="color: red;" href="index.html">В начало</a>
     </div>
@@ -57,17 +57,24 @@
 
         <br><br>
         <div>
-            <label class="label">Сортировать по</label>
+            <div>
+                <label class="label">Сортировать по</label>
 
-            <br><br>
+                <br><br>
 
-            <input type="radio" id="sort1" name="sort_type" onclick="sortWords('alphabet');">
-            <label for="sort1">Алфавиту</label>
+                <input type="radio" id="sort1" name="sort_type" onclick="sortWords('alphabet');">
+                <label for="sort1">Алфавиту</label>
 
-            <input type="radio" id="sort2" name="sort_type" onclick="sortWords('date');">
-            <label for="sort2">Дате добавления</label>
+                <input type="radio" id="sort2" name="sort_type" onclick="sortWords('date');">
+                <label for="sort2">Дате добавления</label>
+            </div>
         </div>
         <hr><br><br><br>
+
+        <div id="selector-items-div" align="right">
+            <button class="select-btn" onclick="selectItems();">Выделить всё</button>
+            <button class="select-btn" onclick="unselectItems();">Снять выделение</button>
+        </div>
 
     </div>
     <script src="js/consts.js"></script>

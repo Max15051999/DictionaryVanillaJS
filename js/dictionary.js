@@ -5,6 +5,7 @@ var fileInput = document.querySelector('#file-input');
 var symbolsDiv = document.querySelector('#symbols-div');
 var searchInput = document.querySelector('#search-input');
 var container = document.querySelector('.container');
+var selectorItemsDiv = document.querySelector('#selector-items-div');
 
 var divWithWordCards = document.createElement('div');
 divWithWordCards.id = 'main-div-with-words';
@@ -26,6 +27,30 @@ try {
             .filter(GISTWord => GISTWord['language'] === dictLang);
 } catch(error) {
     dictWords = [];
+}
+
+if (dictWords.length < 2)
+    selectorItemsDiv.style.display = 'none';
+
+function selectItems() {
+    // checkedWords[focusedWord['original']] = {'word': focusedWord, 'card': parentElement};
+    // checkedWordsCounter++;
+
+    checkedWordsCounter = 0;
+    for (var dictWord of dictWords) {
+        var card = divWithWordCards.children[checkedWordsCounter++];
+        checkedWords[dictWord['original']] = {'word': dictWord, 'card': card};
+        card.querySelector('input').checked = true;
+    }
+}
+
+function unselectItems() {
+    for (var card of divWithWordCards.children)
+        card.querySelector('input').checked = false;
+
+    checkedWordsCounter = 0;
+    checkedWords = {};
+
 }
 
 function divWithWordCardsOnClick(event) {

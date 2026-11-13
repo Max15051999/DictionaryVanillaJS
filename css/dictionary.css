@@ -76,3 +76,7 @@
     display: flex; /* Делаем контейнер flex-контейнером */
     justify-content: center; /* Центрируем кнопки по горизонтали */
 }
+
+.select-btn {
+    all: revert;
+}
